@@ -29,7 +29,7 @@ public class ProductService {
 
     @Transactional
     public ProductDto modify(int id, String name, int price) {
-        Product product = findById(id).orElseThrow(() -> new RuntimeException("상품 없음"));
+        Product product = findById(id).get();
         product.update(name, price);
         return new ProductDto(product);
     }
