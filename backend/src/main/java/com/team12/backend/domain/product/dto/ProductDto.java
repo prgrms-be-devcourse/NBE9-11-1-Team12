@@ -1,22 +1,23 @@
 package com.team12.backend.domain.product.dto;
 
 import com.team12.backend.domain.product.entity.Product;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
 
-@Getter
-@AllArgsConstructor
-public class ProductDto {
+import java.time.LocalDateTime;
 
-    private int id;
-    private String name;
-    private int price;
-
-    public static ProductDto from(Product product) {
-        return new ProductDto(
+public record ProductDto(
+        int id,
+        String name,
+        int price,
+        LocalDateTime createDate,
+        LocalDateTime modifiedDate
+) {
+    public ProductDto(Product product) {
+        this(
                 product.getId(),
                 product.getName(),
-                product.getPrice()
+                product.getPrice(),
+                product.getCreatedDate(),
+                product.getModifiedDate()
         );
     }
 }
