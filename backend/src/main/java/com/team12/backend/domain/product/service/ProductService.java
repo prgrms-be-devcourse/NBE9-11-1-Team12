@@ -18,26 +18,25 @@ public class ProductService {
     @Transactional
     public Product create(String name, int price){
         Product product = new Product(name, price);
-
         return productRepository.save(product);
     }
 
     @Transactional
     public Product modify(int id, String name, int price){
-        Product product = findBYId(id).get();
+        Product product = findById(id).get();
         product.update(name, price);
 
-        return productRepository.save(product);
+        return product;
     }
 
     @Transactional
     public void delete(int id){
-        Product product = findBYId(id).get();
+        Product product = findById(id).get();
         productRepository.delete(product);
     }
 
 
-    private Optional<Product> findBYId(int id){
+    public Optional<Product> findById(int id){
         return productRepository.findById(id);
     }
 }

@@ -5,10 +5,10 @@ import com.team12.backend.domain.product.entity.Product;
 import java.time.LocalDateTime;
 
 public record ProductDto(
-        Integer id,
+        int id,
         String name,
         int price,
-        LocalDateTime createdDate,
+        LocalDateTime createDate,
         LocalDateTime modifiedDate
 ){
     public ProductDto(Product product) {
