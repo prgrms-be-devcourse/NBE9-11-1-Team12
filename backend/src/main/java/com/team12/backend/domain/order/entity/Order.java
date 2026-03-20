@@ -1,5 +1,6 @@
 package com.team12.backend.domain.order.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.team12.backend.domain.customer.entity.Customer;
 import com.team12.backend.global.entity.BaseEntity;
 import jakarta.persistence.*;
@@ -36,10 +37,12 @@ public class Order extends BaseEntity {
             cascade = {CascadeType.PERSIST, CascadeType.REMOVE},
             fetch = FetchType.LAZY,
             orphanRemoval = true)
+    @JsonIgnore
     private List<OrderItem> orderItems = new ArrayList<>();
 
     public void addOrderItem(OrderItem orderItem) {
-        totalPrice += orderItem.getPrice();
+        totalPrice += orderItem.getSubTotal();
+        orderItem.setOrder(this);
         orderItems.add(orderItem);
     }
 

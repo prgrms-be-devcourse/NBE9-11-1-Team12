@@ -9,6 +9,7 @@ import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Table(name = "order_items")
@@ -24,8 +25,13 @@ public class OrderItem extends BaseEntity {
     private int price;
 
     @ManyToOne
+    @Setter
     private Order order;
 
     @ManyToOne
     private Product product;
+
+    public int getSubTotal() {
+        return price * quantity;
+    }
 }
