@@ -24,6 +24,18 @@ public class OrderService {
                 .toList();
     }
 
+    @Transactional
+    public void deleteOrder(int orderId) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(()-> new IllegalArgumentException("주문 없음"));
+
+        if(order.isStatus()){
+            throw new IllegalStateException("배송완료 주문");
+        }
+
+        orderRepository.delete(order);
+    }
+
     public List<Order> getOrders() {
         return orderRepository.findAll();
     }
