@@ -43,8 +43,8 @@ public class BaseInitData {
     @Transactional
     public void work1() {
         if (customerRepository.count() == 0) {
-            Customer customer = new Customer();
-            customer.setEmail("test@test.com");
+            Customer customer = new Customer("test@test.com");
+            customerRepository.save(customer);
         }
 
         if (productRepository.count() == 0) {
@@ -53,7 +53,8 @@ public class BaseInitData {
         }
 
         if (orderRepository.count() == 0) {
-            Customer customer = customerRepository.findById(1L).get();
+            Customer customer = new Customer("test@test.com");
+            customerRepository.save(customer);
             Product product = productRepository.findById(1).get();
             Order order = new Order(
                     "address", "postcode", false,

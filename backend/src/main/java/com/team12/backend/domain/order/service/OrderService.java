@@ -27,13 +27,9 @@ public class OrderService {
 
         // 기존 고객 조회, 없으면 생성 있으면 조회만하기
         Customer customer = customerRepository.findByEmail(request.getEmail())
-                .orElseGet(() -> {
-                    Customer newCustomer = new Customer();
-                    newCustomer.setEmail(request.getEmail());
-                    return customerRepository.save(newCustomer);
-                });
+                .orElseGet(() -> customerRepository.save(new Customer(request.getEmail())));
 
-        // 생성
+        // 주문 생성
         Order order = new Order();
         order.setCustomer(customer);
         order.setAddress(request.getAddress());
@@ -45,7 +41,7 @@ public class OrderService {
 
         int totalPrice = 0;
 
-        // 처리
+        // 주문 처리
         for (OrdersCreateRequest.OrderItemDto item : request.getOrderItems()) {
 
             Product product = productRepository.findById(item.getProductId())
