@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 
 type Product = {
   id: number;
@@ -12,7 +11,8 @@ type Product = {
 
 export default function Page() {
   const [products, setProducts] = useState<Product[]>([]);
-  const router = useRouter();
+  const [isEditing, setIsEditing] = useState<number | null>(null); // 현재 수정 중인 상품 ID
+  const [editForm, setEditForm] = useState({ name: '', price: 0 }); // 폼 데이터
 
   useEffect(() => {
     fetch('http://localhost:8080/admin/products')
@@ -23,58 +23,49 @@ export default function Page() {
   // ✅ 삭제 기능
   const handleDelete = async (product: Product) => {
     if (!confirm('정말 삭제하시겠습니까?')) return;
-
     try {
-      const res = await fetch(
-        `http://localhost:8080/admin/products/${product.id}`,
-        {
-          method: 'DELETE',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            id: product.id,
-          }),
-        }
-      );
-
-      if (!res.ok) throw new Error('삭제 실패');
-
-      // 화면에서 제거
-      setProducts((prev) => prev.filter((p) => p.id !== product.id));
-    } catch (error) {
-      alert('삭제 중 오류 발생');
-      console.error(error);
-    }
+      const res = await fetch(`http://localhost:8080/admin/products/${product.id}`, {
+        method: 'DELETE'
+      });
+      if (res.ok) setProducts((prev) => prev.filter((p) => p.id !== product.id));
+    } catch (error) { alert('삭제 중 오류 발생'); }
   };
 
-  // ✅ 수정 이동
-  const handleUpdate = (id: number) => {
-    router.push(`/admin/products/${id}`);
+  // ✅ 수정 모드 진입 (이름, 비용만 폼에 세팅)
+  const startEdit = (product: Product) => {
+    setIsEditing(product.id);
+    setEditForm({ name: product.name, price: product.price });
+  };
+
+  // ✅ 수정 처리 (백엔드 PUT 요청)
+  const handleModify = async (id: number) => {
+    try {
+      const res = await fetch(`http://localhost:8080/admin/products/${id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(editForm), // 이름과 비용만 보냄
+      });
+
+      if (res.ok) {
+        setProducts((prev) =>
+          prev.map((p) => (p.id === id ? { ...p, ...editForm } : p))
+        );
+        setIsEditing(null); // 수정 모드 종료
+        alert('수정 완료!');
+      }
+    } catch (error) { alert('수정 중 오류 발생'); }
   };
 
   return (
     <div style={{ padding: '40px', maxWidth: '900px', margin: '0 auto' }}>
-      
-      {/* 네비게이션 */}
       <nav style={{ marginBottom: '30px', fontSize: '18px' }}>
-        <Link href="/admin/products" style={{ marginRight: '20px', fontWeight: 'bold' }}>
-          상품
-        </Link>
+        <Link href="/admin/products" style={{ marginRight: '20px', fontWeight: 'bold' }}>상품</Link>
         <Link href="/admin/orders">주문</Link>
       </nav>
 
-      <h1 style={{ fontSize: '24px', marginBottom: '20px' }}>
-        상품 목록
-      </h1>
+      <h1 style={{ fontSize: '24px', marginBottom: '20px' }}>상품 목록</h1>
 
-      <table
-        style={{
-          width: '100%',
-          borderCollapse: 'collapse',
-          textAlign: 'left',
-        }}
-      >
+      <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
         <thead>
           <tr style={{ borderBottom: '2px solid #ddd' }}>
             <th style={{ padding: '12px' }}>ID</th>
@@ -83,54 +74,39 @@ export default function Page() {
             <th style={{ padding: '12px' }}>기능</th>
           </tr>
         </thead>
-
         <tbody>
           {products.map((product) => (
             <tr key={product.id} style={{ borderBottom: '1px solid #eee' }}>
               <td style={{ padding: '12px' }}>{product.id}</td>
-              <td style={{ padding: '12px' }}>{product.name}</td>
               <td style={{ padding: '12px' }}>
-                {product.price.toLocaleString()}원
+                {isEditing === product.id ? (
+                  <input 
+                    value={editForm.name} 
+                    onChange={(e) => setEditForm({ ...editForm, name: e.target.value })} 
+                  />
+                ) : (product.name)}
               </td>
               <td style={{ padding: '12px' }}>
-                
-                {/* ✅ 수정 버튼 */}
-                <button
-                  onClick={() => handleUpdate(product.id)}
-                  style={{
-                    padding: '6px 12px',
-                    marginRight: '8px',
-                    border: 'none',
-                    borderRadius: '6px',
-                    backgroundColor: '#4CAF50',
-                    color: 'white',
-                    cursor: 'pointer',
-                  }}
-                >
-                  수정
-                </button>
-
-                {/* ✅ 삭제 버튼 */}
-                <button
-                  onClick={() => handleDelete(product)}
-                  style={{
-                    padding: '6px 12px',
-                    border: 'none',
-                    borderRadius: '6px',
-                    backgroundColor: '#f44336',
-                    color: 'white',
-                    cursor: 'pointer',
-                  }}
-                >
-                  삭제
-                </button>
-
+                {isEditing === product.id ? (
+                  <input 
+                    type="number" 
+                    value={editForm.price} 
+                    onChange={(e) => setEditForm({ ...editForm, price: Number(e.target.value) })} 
+                  />
+                ) : (product.price.toLocaleString() + '원')}
+              </td>
+              <td style={{ padding: '12px' }}>
+                {isEditing === product.id ? (
+                  <button onClick={() => handleModify(product.id)} style={{ backgroundColor: '#2196F3', color: 'white', marginRight: '8px' }}>저장</button>
+                ) : (
+                  <button onClick={() => startEdit(product)} style={{ backgroundColor: '#4CAF50', color: 'white', marginRight: '8px' }}>수정</button>
+                )}
+                <button onClick={() => handleDelete(product)} style={{ backgroundColor: '#f44336', color: 'white' }}>삭제</button>
               </td>
             </tr>
           ))}
         </tbody>
       </table>
-
     </div>
   );
 }
