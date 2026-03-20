@@ -1,5 +1,6 @@
 package com.team12.backend.domain.product.controller;
 
+import com.team12.backend.domain.product.dto.ProductDto;
 import com.team12.backend.domain.product.entity.Product;
 import com.team12.backend.domain.product.service.ProductService;
 import lombok.RequiredArgsConstructor;
@@ -25,13 +26,13 @@ public class ProductController {
     }
 
     @PostMapping("/admin/products")
-    public void create(@RequestBody ProductRequest request) {
-        productService.create(request.getName(), request.getPrice());
+    public ProductDto create(@RequestBody ProductRequest request) {
+        return productService.create(request.getName(), request.getPrice());
     }
 
     @PutMapping("/admin/products/{id}")
-    public void modify(@PathVariable int id, @RequestBody ProductRequest request) {
-        productService.modify(id, request.getName(), request.getPrice());
+    public ProductDto modify(@PathVariable int id, @RequestBody ProductRequest request) {
+        return productService.modify(id, request.getName(), request.getPrice());
     }
 
     @DeleteMapping("/admin/products/{id}")

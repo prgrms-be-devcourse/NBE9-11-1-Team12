@@ -1,5 +1,6 @@
 package com.team12.backend.domain.product.service;
 
+import com.team12.backend.domain.product.dto.ProductDto;
 import com.team12.backend.domain.product.entity.Product;
 import com.team12.backend.domain.product.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
@@ -11,7 +12,6 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-
 public class ProductService {
 
     private final ProductRepository productRepository;
@@ -21,28 +21,26 @@ public class ProductService {
     }
 
     @Transactional
-    public Product create(String name, int price){
+    public ProductDto create(String name, int price) {
         Product product = new Product(name, price);
-
-        return productRepository.save(product);
+        Product savedProduct = productRepository.save(product);
+        return new ProductDto(savedProduct);
     }
 
     @Transactional
-    public Product modify(int id, String name, int price){
-        Product product = findBYId(id).get();
+    public ProductDto modify(int id, String name, int price) {
+        Product product = findById(id).orElseThrow(() -> new RuntimeException("상품 없음"));
         product.update(name, price);
-
-        return productRepository.save(product);
+        return new ProductDto(product);
     }
 
     @Transactional
     public void delete(int id){
-        Product product = findBYId(id).get();
+        Product product = findById(id).get();
         productRepository.delete(product);
     }
 
-
-    private Optional<Product> findBYId(int id){
+    private Optional<Product> findById(int id){
         return productRepository.findById(id);
     }
 }
