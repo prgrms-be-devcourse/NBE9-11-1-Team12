@@ -37,4 +37,9 @@ public class Order extends BaseEntity {
             fetch = FetchType.LAZY,
             orphanRemoval = true)
     private List<OrderItem> orderItems = new ArrayList<>();
+
+    public void addOrderItem(OrderItem orderItem) {
+        totalPrice += orderItem.getPrice();
+        orderItems.add(orderItem);
+    }
 }
