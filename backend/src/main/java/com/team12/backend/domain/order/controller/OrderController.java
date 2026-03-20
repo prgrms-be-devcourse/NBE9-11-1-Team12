@@ -1,16 +1,20 @@
 package com.team12.backend.domain.order.controller;
 
+
 import com.team12.backend.domain.order.dto.AdminOrderResponse;
 import com.team12.backend.domain.order.dto.OrderDto;
 import com.team12.backend.domain.order.entity.Order;
 import com.team12.backend.domain.order.service.OrderService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
+@CrossOrigin(origins = "http://localhost:3000")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/orders")
@@ -21,6 +25,12 @@ public class OrderController {
     @GetMapping("/{email}")
     public List<OrderDto> getOrdersByEmail(@PathVariable("email") String email){
         return orderService.getOrdersByEmail(email);
+    }
+
+    @DeleteMapping("/{orderId}")
+    public ResponseEntity<Void> cancelOrder(@PathVariable("orderId") int orderId){
+        orderService.deleteOrder(orderId);
+        return ResponseEntity.noContent().build();
     }
 
 
