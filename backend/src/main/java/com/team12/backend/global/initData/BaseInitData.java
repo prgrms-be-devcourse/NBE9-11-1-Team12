@@ -27,11 +27,8 @@ public class BaseInitData {
     @Bean
     ApplicationRunner initDataRunner() {
         return args -> {
-
             self.work1();
-
         };
-
     }
 
     @Transactional
@@ -42,9 +39,25 @@ public class BaseInitData {
         }
 
         if (productRepository.count() == 0) {
-            productRepository.save(new Product("이테리에서 자란 국산 원두", 4500));
-            productRepository.save(new Product("터키산 볶음 원두", 5000));
-            productRepository.save(new Product("초코칩 쿠키 먹고싶다", 2500));
+            productRepository.save(new Product(
+                    "Columbia Nariño",
+                    5000
+            ));
+
+            productRepository.save(new Product(
+                    "Brazil Serra Do Caparaó",
+                    5000
+            ));
+
+            productRepository.save(new Product(
+                    "Columbia Quindío (White Wine Extended Fermentation)",
+                    5000
+            ));
+
+            productRepository.save(new Product(
+                    "Ethiopia Sidamo",
+                    5000
+            ));
         }
 
     }

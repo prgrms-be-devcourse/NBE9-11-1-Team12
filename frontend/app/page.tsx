@@ -85,7 +85,7 @@ export default function Home() {
   };
 
   const handleOrderSearch = () => {
-    router.push("/order-search");
+    router.push("/orders");
   };
 
   const handleGoHome = () => {
