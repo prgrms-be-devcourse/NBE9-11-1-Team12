@@ -42,4 +42,8 @@ public class Order extends BaseEntity {
         totalPrice += orderItem.getPrice();
         orderItems.add(orderItem);
     }
+
+    public void activateStatus() {
+        status = true;
+    }
 }
