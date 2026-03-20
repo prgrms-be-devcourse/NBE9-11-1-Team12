@@ -17,17 +17,16 @@ import java.util.List;
 @CrossOrigin(origins = "http://localhost:3000")
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/orders")
 public class OrderController {
 
     private final OrderService orderService;
 
-    @GetMapping("/{email}")
+    @GetMapping("/orders/{email}")
     public List<OrderDto> getOrdersByEmail(@PathVariable("email") String email){
         return orderService.getOrdersByEmail(email);
     }
 
-    @DeleteMapping("/{orderId}")
+    @DeleteMapping("/orders/{orderId}")
     public ResponseEntity<Void> cancelOrder(@PathVariable("orderId") int orderId){
         orderService.deleteOrder(orderId);
         return ResponseEntity.noContent().build();
