@@ -20,4 +20,9 @@ public class Product extends BaseEntity {
 
     @Column(nullable = false)
     private int price;
+
+    public void update(String name, int price){
+        this.name = name;
+        this.price = price;
+    }
 }
