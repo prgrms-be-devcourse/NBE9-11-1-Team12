@@ -33,11 +33,8 @@ public class BaseInitData {
     @Bean
     ApplicationRunner initDataRunner() {
         return args -> {
-
             self.work1();
-
         };
-
     }
 
     @Transactional
@@ -48,16 +45,19 @@ public class BaseInitData {
         }
 
         if (productRepository.count() == 0) {
-            Product product = new Product("product1", 1000);
-            productRepository.save(product);
+            productRepository.save(new Product("이테리에서 자란 국산 원두", 4500));
+            productRepository.save(new Product("터키산 볶음 원두", 5000));
+            productRepository.save(new Product("초코칩 쿠키 먹고싶다", 2500));
         }
 
         if (orderRepository.count() == 0) {
-            Customer customer = customerRepository.findById(1).get();
-            Product product = productRepository.findById(1).get();
+            Customer customer = customerRepository.findById(1).orElseThrow();
+            Product product = productRepository.findById(1).orElseThrow();
+
             Order order = new Order(
                     "address", "postcode", false,
                     0, customer, new ArrayList<>());
+
             OrderItem orderItem = new OrderItem(1, product.getPrice(), order, product);
             order.addOrderItem(orderItem);
             orderRepository.save(order);
