@@ -18,14 +18,31 @@ public class ProductController {
 
     private final ProductService productService;
 
+    // 사용자 상품 목록 조회
     @GetMapping("/products")
-    public List<Product> list() {
-        return productService.findAll();
+    public List<ProductDto> getProducts() {
+        List<Product> result = productService.findAll();
+
+        return result.stream()
+                .map(ProductDto::new)
+                .toList();
     }
 
+    // 관리자 상품 목록 조회
     @GetMapping("/admin/products")
-    public List<Product> adminList() {
-        return productService.findAll();
+    public List<ProductDto> productsList() {
+        List<Product> result = productService.findAll();
+
+        return result.stream()
+                .map(ProductDto::new)
+                .toList();
+    }
+
+    // 관리자 상품 상세 조회
+    @GetMapping("/admin/products/{id}")
+    public ProductDto detail(@PathVariable int id) {
+        Product product = productService.findById(id).get();
+        return new ProductDto(product);
     }
 
     @PostMapping("/admin/products")

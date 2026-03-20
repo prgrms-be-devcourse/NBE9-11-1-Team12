@@ -40,7 +40,7 @@ public class ProductService {
         productRepository.delete(product);
     }
 
-    private Optional<Product> findById(int id){
+    public Optional<Product> findById(int id){
         return productRepository.findById(id);
     }
 }
