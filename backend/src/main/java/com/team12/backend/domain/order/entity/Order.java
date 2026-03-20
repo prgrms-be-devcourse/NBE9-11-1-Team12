@@ -45,4 +45,8 @@ public class Order extends BaseEntity {
         orderItem.setOrder(this);
         orderItems.add(orderItem);
     }
+
+    public void activateStatus() {
+        status = true;
+    }
 }

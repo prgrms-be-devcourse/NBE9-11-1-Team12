@@ -33,11 +33,8 @@ public class BaseInitData {
     @Bean
     ApplicationRunner initDataRunner() {
         return args -> {
-
             self.work1();
-
         };
-
     }
 
     @Transactional
