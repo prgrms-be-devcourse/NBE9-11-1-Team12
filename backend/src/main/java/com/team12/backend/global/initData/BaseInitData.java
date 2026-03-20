@@ -33,11 +33,8 @@ public class BaseInitData {
     @Bean
     ApplicationRunner initDataRunner() {
         return args -> {
-
             self.work1();
-
         };
-
     }
 
     @Transactional
@@ -48,8 +45,25 @@ public class BaseInitData {
         }
 
         if (productRepository.count() == 0) {
-            Product product = new Product("product1", 1000);
-            productRepository.save(product);
+            productRepository.save(new Product(
+                    "Columbia Nariño",
+                    5000
+            ));
+
+            productRepository.save(new Product(
+                    "Brazil Serra Do Caparaó",
+                    5000
+            ));
+
+            productRepository.save(new Product(
+                    "Columbia Quindío (White Wine Extended Fermentation)",
+                    5000
+            ));
+
+            productRepository.save(new Product(
+                    "Ethiopia Sidamo",
+                    5000
+            ));
         }
 
         if (orderRepository.count() == 0) {
