@@ -1,4 +1,4 @@
-package com.team12.backend.domain.product.controller;
+    package com.team12.backend.domain.product.controller;
 
 import com.team12.backend.domain.product.dto.ProductDto;
 import com.team12.backend.domain.product.entity.Product;
