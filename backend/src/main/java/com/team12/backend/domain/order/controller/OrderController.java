@@ -8,12 +8,11 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/orders")
 public class OrderController {
 
     private final OrderService orderService;
 
-    @PostMapping
+    @PostMapping("/orders")
     public Order createOrder(@RequestBody OrdersCreateRequest request) {
         return orderService.createOrder(request);
     }

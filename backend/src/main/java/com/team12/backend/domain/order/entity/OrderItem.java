@@ -14,7 +14,6 @@ import lombok.Setter;
 @Entity
 @Table(name = "order_items")
 @Getter
-@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class OrderItem extends BaseEntity {
@@ -26,8 +25,13 @@ public class OrderItem extends BaseEntity {
     private int price;
 
     @ManyToOne
+    @Setter
     private Order order;
 
     @ManyToOne
     private Product product;
+
+    public int getSubTotal() {
+        return price * quantity;
+    }
 }
