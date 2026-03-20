@@ -1,64 +1,285 @@
+"use client";
+
 import Image from "next/image";
+import { useEffect, useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
+
+type Product = {
+  id: number;
+  name: string;
+  price: number;
+};
+
+const productImages: Record<number, string> = {
+  1: "/images/1.png",
+  2: "/images/2.png",
+  3: "/images/3.png",
+  4: "/images/4.png",
+};
 
 export default function Home() {
+  const router = useRouter();
+  const [products, setProducts] = useState<Product[]>([]);
+  const [quantities, setQuantities] = useState<Record<number, number>>({});
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    let isMounted = true;
+
+    const fetchProducts = async () => {
+      try {
+        setLoading(true);
+        setError("");
+
+        const res = await fetch("http://localhost:8080/products", {
+          cache: "no-store",
+        });
+
+        if (!res.ok) {
+          throw new Error("상품 목록 조회 실패");
+        }
+
+        const data: Product[] = await res.json();
+
+        if (!isMounted) return;
+
+        setProducts(data);
+
+        const initialQuantities: Record<number, number> = {};
+        data.forEach((product) => {
+          initialQuantities[product.id] = 0;
+        });
+        setQuantities(initialQuantities);
+      } catch (err) {
+        console.error(err);
+        if (isMounted) {
+          setError("상품 목록을 불러오지 못했습니다.");
+        }
+      } finally {
+        if (isMounted) {
+          setLoading(false);
+        }
+      }
+    };
+
+    fetchProducts();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  const handleIncrease = (productId: number) => {
+    setQuantities((prev) => ({
+      ...prev,
+      [productId]: (prev[productId] || 0) + 1,
+    }));
+  };
+
+  const handleDecrease = (productId: number) => {
+    setQuantities((prev) => ({
+      ...prev,
+      [productId]: Math.max(0, (prev[productId] || 0) - 1),
+    }));
+  };
+
+  const handleOrderSearch = () => {
+    router.push("/order-search");
+  };
+
+  const handleGoHome = () => {
+    router.push("/");
+  };
+
+  const selectedProducts = useMemo(() => {
+    return products.filter((product) => (quantities[product.id] || 0) > 0);
+  }, [products, quantities]);
+
+  const totalSelectedCount = useMemo(() => {
+    return selectedProducts.reduce(
+      (sum, product) => sum + (quantities[product.id] || 0),
+      0
+    );
+  }, [selectedProducts, quantities]);
+
+  const totalPrice = useMemo(() => {
+    return selectedProducts.reduce(
+      (sum, product) => sum + product.price * (quantities[product.id] || 0),
+      0
+    );
+  }, [selectedProducts, quantities]);
+
+  const handleSubmitOrder = () => {
+    if (selectedProducts.length === 0) {
+      alert("수량을 1개 이상 선택한 상품이 있어야 합니다.");
+      return;
+    }
+
+    const params = new URLSearchParams();
+
+    selectedProducts.forEach((product) => {
+      params.append("productId", String(product.id));
+      params.append("quantity", String(quantities[product.id]));
+    });
+
+    router.push(`/order?${params.toString()}`);
+  };
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+    <div className="flex min-h-screen flex-col items-center bg-zinc-50 font-sans text-black dark:bg-black dark:text-white">
+      <main className="flex w-full max-w-6xl flex-1 flex-col bg-white px-6 py-10 dark:bg-black">
+        {/* 상단 바 */}
+        <div className="relative mb-4 flex items-center border border-zinc-300 bg-zinc-100 px-6 py-4 dark:border-zinc-700 dark:bg-zinc-900">
+          <button
+            onClick={handleGoHome}
+            className="text-lg font-medium hover:opacity-80"
           >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+            메인
+          </button>
+
+          <button
+            onClick={handleGoHome}
+            className="absolute left-1/2 -translate-x-1/2 text-2xl font-bold tracking-wide hover:opacity-80"
           >
-            Documentation
-          </a>
+            Grids & Circles
+          </button>
+
+          <button
+            onClick={handleOrderSearch}
+            className="ml-auto text-lg font-medium hover:opacity-80"
+          >
+            주문조회
+          </button>
         </div>
+
+        {/* 안내 문구 */}
+        <div className="mb-6 flex items-center justify-center border border-zinc-200 bg-zinc-50 py-3 text-base dark:border-zinc-700 dark:bg-zinc-900">
+        당일 오후 2시 이후의 주문 건은 다음 날 배송이 시작됩니다.
+        </div>
+
+        {/* 본문 */}
+        {loading ? (
+          <div className="flex flex-1 items-center justify-center py-20 text-lg">
+            로딩 중...
+          </div>
+        ) : error ? (
+          <div className="flex flex-1 items-center justify-center py-20 text-lg text-red-500">
+            {error}
+          </div>
+        ) : products.length === 0 ? (
+          <div className="flex flex-1 items-center justify-center py-20 text-lg">
+            상품이 없습니다.
+          </div>
+        ) : (
+          <>
+            <div className="flex flex-col gap-4">
+              {products.map((product) => (
+                <div
+                  key={product.id}
+                  className="flex items-center justify-between border border-zinc-300 bg-zinc-50 px-6 py-5 dark:border-zinc-700 dark:bg-zinc-900"
+                >
+                  <div className="flex items-center gap-6">
+                    <div className="relative h-24 w-24 overflow-hidden border border-zinc-300 bg-white dark:border-zinc-700">
+                      <Image
+                        src={productImages[product.id] || "/images/default.png"}
+                        alt={product.name}
+                        fill
+                        className="object-cover"
+                      />
+                    </div>
+
+                    <div className="flex flex-col gap-2">
+                      <div className="flex min-h-[48px] min-w-[320px] items-center border border-zinc-300 bg-white px-4 text-xl dark:border-zinc-700 dark:bg-zinc-800">
+                        {product.name}
+                      </div>
+
+                      <div className="flex min-h-[40px] min-w-[180px] items-center border border-zinc-300 bg-white px-4 text-lg dark:border-zinc-700 dark:bg-zinc-800">
+                        {product.price.toLocaleString()}원
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={() => handleDecrease(product.id)}
+                      className="flex h-11 w-11 items-center justify-center border border-zinc-300 bg-zinc-200 text-xl font-bold transition-colors hover:bg-zinc-300 dark:border-zinc-600 dark:bg-zinc-700 dark:hover:bg-zinc-600"
+                    >
+                      -
+                    </button>
+
+                    <div className="flex h-11 w-14 items-center justify-center border border-zinc-300 bg-white text-lg dark:border-zinc-700 dark:bg-zinc-800">
+                      {quantities[product.id] || 0}
+                    </div>
+
+                    <button
+                      onClick={() => handleIncrease(product.id)}
+                      className="flex h-11 w-11 items-center justify-center border border-zinc-300 bg-zinc-200 text-xl font-bold transition-colors hover:bg-zinc-300 dark:border-zinc-600 dark:bg-zinc-700 dark:hover:bg-zinc-600"
+                    >
+                      +
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* 선택한 상품 요약 */}
+            <div className="mt-8 border border-zinc-300 bg-zinc-50 p-6 dark:border-zinc-700 dark:bg-zinc-900">
+              <h2 className="mb-4 text-xl font-semibold">선택한 상품</h2>
+
+              {selectedProducts.length === 0 ? (
+                <p className="text-zinc-500 dark:text-zinc-400">
+                  아직 선택한 상품이 없습니다.
+                </p>
+              ) : (
+                <div className="flex flex-col gap-3">
+                  {selectedProducts.map((product) => {
+                    const quantity = quantities[product.id] || 0;
+                    const itemTotal = product.price * quantity;
+
+                    return (
+                      <div
+                        key={product.id}
+                        className="flex items-center justify-between border-b border-zinc-200 pb-3 dark:border-zinc-700"
+                      >
+                        <div className="flex flex-col">
+                          <span className="font-medium">{product.name}</span>
+                          <span className="text-sm text-zinc-500 dark:text-zinc-400">
+                            {product.price.toLocaleString()}원 × {quantity}개
+                          </span>
+                        </div>
+
+                        <div className="font-semibold">
+                          {itemTotal.toLocaleString()}원
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+
+              <div className="mt-5 flex items-center justify-between border-t border-zinc-200 pt-4 dark:border-zinc-700">
+                <div className="text-base">
+                  총 선택 수량:{" "}
+                  <span className="font-bold">{totalSelectedCount}개</span>
+                </div>
+                <div className="text-lg font-bold">
+                  총 금액: {totalPrice.toLocaleString()}원
+                </div>
+              </div>
+            </div>
+
+            {/* 하단 버튼 */}
+            <div className="mt-6 flex justify-end">
+              <button
+                onClick={handleSubmitOrder}
+                className="rounded-md bg-black px-8 py-3 text-lg font-medium text-white transition-colors hover:bg-zinc-800 dark:bg-white dark:text-black dark:hover:bg-zinc-200"
+              >
+                담기
+              </button>
+            </div>
+          </>
+        )}
       </main>
     </div>
   );

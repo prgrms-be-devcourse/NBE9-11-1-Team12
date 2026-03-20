@@ -4,14 +4,12 @@ import com.team12.backend.global.entity.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "products")
 @Getter
-@AllArgsConstructor
 @NoArgsConstructor
 public class Product extends BaseEntity {
 
@@ -20,4 +18,9 @@ public class Product extends BaseEntity {
 
     @Column(nullable = false)
     private int price;
+
+    public Product(String name, int price) {
+        this.name = name;
+        this.price = price;
+    }
 }
