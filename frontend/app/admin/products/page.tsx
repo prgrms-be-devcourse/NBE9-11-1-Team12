@@ -57,11 +57,7 @@ export default function Page() {
   };
 
   return (
-    <div style={{ padding: '40px', maxWidth: '900px', margin: '0 auto' }}>
-      <nav style={{ marginBottom: '30px', fontSize: '18px' }}>
-        <Link href="/admin/products" style={{ marginRight: '20px', fontWeight: 'bold' }}>상품</Link>
-        <Link href="/admin/orders">주문</Link>
-      </nav>
+    <>
 
       <h1 style={{ fontSize: '24px', marginBottom: '20px' }}>상품 목록</h1>
 
@@ -80,18 +76,18 @@ export default function Page() {
               <td style={{ padding: '12px' }}>{product.id}</td>
               <td style={{ padding: '12px' }}>
                 {isEditing === product.id ? (
-                  <input 
-                    value={editForm.name} 
-                    onChange={(e) => setEditForm({ ...editForm, name: e.target.value })} 
+                  <input
+                    value={editForm.name}
+                    onChange={(e) => setEditForm({ ...editForm, name: e.target.value })}
                   />
                 ) : (product.name)}
               </td>
               <td style={{ padding: '12px' }}>
                 {isEditing === product.id ? (
-                  <input 
-                    type="number" 
-                    value={editForm.price} 
-                    onChange={(e) => setEditForm({ ...editForm, price: Number(e.target.value) })} 
+                  <input
+                    type="number"
+                    value={editForm.price}
+                    onChange={(e) => setEditForm({ ...editForm, price: Number(e.target.value) })}
                   />
                 ) : (product.price.toLocaleString() + '원')}
               </td>
@@ -107,6 +103,6 @@ export default function Page() {
           ))}
         </tbody>
       </table>
-    </div>
+    </>
   );
 }
