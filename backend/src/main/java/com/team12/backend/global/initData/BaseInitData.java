@@ -57,7 +57,7 @@ public class BaseInitData {
             Product product = productRepository.findById(1).get();
             Order order = new Order(
                     "address", "postcode", false,
-                    product.getPrice(), customer, new ArrayList<>());
+                    0, customer, new ArrayList<>());
             OrderItem orderItem = new OrderItem(1, product.getPrice(), order, product);
             order.addOrderItem(orderItem);
             orderRepository.save(order);
