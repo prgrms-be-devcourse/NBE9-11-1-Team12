@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { fetchApi } from '@/app/lib/client';
 
 type ProductDetail = {
   id: number;
@@ -20,11 +21,7 @@ export default function ProductDetailPage() {
 
   useEffect(() => {
     if (params.id) {
-      fetch(`http://localhost:8080/admin/products/${params.id}`)
-        .then((res) => {
-          if (!res.ok) throw new Error('상품을 찾을 수 없습니다.');
-          return res.json();
-        })
+      fetchApi(`/admin/products/${params.id}`)
         .then((data) => {
           setProduct(data);
           setLoading(false);
@@ -42,7 +39,7 @@ export default function ProductDetailPage() {
   return (
     <div style={{ padding: '40px', maxWidth: '600px', margin: '0 auto' }}>
       <h1 style={{ fontSize: '24px', marginBottom: '20px' }}>상품 상세 정보</h1>
-      
+
       <div style={{ border: '1px solid #ddd', padding: '20px', borderRadius: '8px', lineHeight: '2' }}>
         <p><strong>ID:</strong> {product.id}</p>
         <p><strong>상품명:</strong> {product.name}</p>
