@@ -84,6 +84,14 @@ export default function Home() {
     }));
   };
 
+  const handleOrderSearch = () => {
+    router.push("/orders");
+  };
+
+  const handleGoHome = () => {
+    router.push("/");
+  };
+
   const selectedProducts = useMemo(() => {
     return products.filter((product) => (quantities[product.id] || 0) > 0);
   }, [products, quantities]);
@@ -122,6 +130,7 @@ export default function Home() {
 
   return (
     <>
+      {/* 본문 */}
       {loading ? (
         <div className="flex flex-1 items-center justify-center py-20 text-lg">
           로딩 중...
@@ -148,7 +157,6 @@ export default function Home() {
                       src={productImages[product.id] || "/images/default.png"}
                       alt={product.name}
                       fill
-                      sizes="96px"
                       className="object-cover"
                     />
                   </div>
@@ -187,6 +195,7 @@ export default function Home() {
             ))}
           </div>
 
+          {/* 선택한 상품 요약 */}
           <div className="mt-8 border border-zinc-300 bg-zinc-50 p-6 dark:border-zinc-700 dark:bg-zinc-900">
             <h2 className="mb-4 text-xl font-semibold">선택한 상품</h2>
 
@@ -223,7 +232,8 @@ export default function Home() {
 
             <div className="mt-5 flex items-center justify-between border-t border-zinc-200 pt-4 dark:border-zinc-700">
               <div className="text-base">
-                총 선택 수량: <span className="font-bold">{totalSelectedCount}개</span>
+                총 선택 수량:{" "}
+                <span className="font-bold">{totalSelectedCount}개</span>
               </div>
               <div className="text-lg font-bold">
                 총 금액: {totalPrice.toLocaleString()}원
@@ -231,6 +241,7 @@ export default function Home() {
             </div>
           </div>
 
+          {/* 하단 버튼 */}
           <div className="mt-6 flex justify-end">
             <button
               onClick={handleSubmitOrder}
