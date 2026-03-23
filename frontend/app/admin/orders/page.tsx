@@ -31,16 +31,21 @@ export default function Orders() {
     }, []);
 
     const handleCompleteOrder = (id: number) => {
-        fetchApi(`/admin/orders/${id}/status`, {
+        return fetchApi(`/admin/orders/${id}/status`, {
             method: "PUT"
         })
             .then(() => onCompleteOrderSuccess(id))
-            .catch(err => alert("완료 처리 실패"));
+            .catch(err => {
+                alert("완료 처리 실패");
+                throw err;
+            });
     }
 
     const onCompleteOrderSuccess = (id: number) => {
-        if (orders === null) return;
-        setOrders(orders.map(order => order.id === id ? { ...order, status: true } : order));
+        setOrders(prev => {
+            if (prev === null) return null;
+            return prev.map(order => order.id === id ? { ...order, status: true } : order);
+        });
     }
 
     const groupedOrders = useMemo(() => {
@@ -102,7 +107,7 @@ export default function Orders() {
     );
 }
 
-function BatchSection({ batch, onCompleteOrder }: { batch: { date: string, entries: any[] }, onCompleteOrder: (id: number) => void }) {
+function BatchSection({ batch, onCompleteOrder }: { batch: { date: string, entries: any[] }, onCompleteOrder: (id: number) => Promise<any> }) {
     const endBatchDate = new Date(batch.date);
     const startBatchDate = new Date(endBatchDate);
     startBatchDate.setDate(startBatchDate.getDate() - 1);
@@ -125,8 +130,25 @@ function BatchSection({ batch, onCompleteOrder }: { batch: { date: string, entri
     );
 }
 
-function OrderGroupCard({ entry, onCompleteOrder }: { entry: any, onCompleteOrder: (id: number) => void }) {
+function OrderGroupCard({ entry, onCompleteOrder }: { entry: any, onCompleteOrder: (id: number) => Promise<any> }) {
     const [isExpanded, setIsExpanded] = useState(false);
+    const [isBatchProcessing, setIsBatchProcessing] = useState(false);
+
+    const handleBatchProcess = async (e: React.MouseEvent) => {
+        e.stopPropagation();
+        if (entry.isAllCompleted || isBatchProcessing) return;
+
+        const pendingOrders = entry.orders.filter((o: any) => !o.status);
+        if (pendingOrders.length === 0) return;
+
+        setIsBatchProcessing(true);
+        try {
+            // Processing sequentially or in parallel - let's do parallel but with Promise.all
+            await Promise.all(pendingOrders.map((o: any) => onCompleteOrder(o.id)));
+        } finally {
+            setIsBatchProcessing(false);
+        }
+    };
 
     return (
         <div className="border border-zinc-300 bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900">
@@ -153,19 +175,16 @@ function OrderGroupCard({ entry, onCompleteOrder }: { entry: any, onCompleteOrde
 
                     <div className="flex items-center gap-4">
                         <button
-                            className={`flex h-11 px-6 items-center justify-center font-bold text-xs uppercase tracking-widest transition-all active:scale-95 shadow-sm ${entry.isAllCompleted
+                            className={`flex h-11 px-6 items-center justify-center font-bold text-xs uppercase tracking-widest transition-all shadow-sm ${entry.isAllCompleted
                                 ? 'bg-zinc-100 text-zinc-400 cursor-default dark:bg-zinc-800 dark:text-zinc-600'
-                                : 'bg-black text-white hover:bg-zinc-800 dark:bg-white dark:text-black dark:hover:bg-zinc-200'
+                                : isBatchProcessing
+                                    ? 'bg-zinc-200 text-zinc-500 cursor-wait dark:bg-zinc-700'
+                                    : 'bg-black text-white hover:bg-zinc-800 active:scale-95 dark:bg-white dark:text-black dark:hover:bg-zinc-200'
                                 }`}
-                            onClick={(e) => {
-                                e.stopPropagation();
-                                if (!entry.isAllCompleted) {
-                                    entry.orders.filter((o: any) => !o.status).forEach((o: any) => onCompleteOrder(o.id));
-                                }
-                            }}
-                            disabled={entry.isAllCompleted}
+                            onClick={handleBatchProcess}
+                            disabled={entry.isAllCompleted || isBatchProcessing}
                         >
-                            {entry.isAllCompleted ? "전체 완료됨" : "일괄 완료처리"}
+                            {entry.isAllCompleted ? "전체 완료됨" : isBatchProcessing ? "처리 중..." : "일괄 완료처리"}
                         </button>
                     </div>
                 </div>
