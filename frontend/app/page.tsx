@@ -84,14 +84,6 @@ export default function Home() {
     }));
   };
 
-  const handleOrderSearch = () => {
-    router.push("/orders");
-  };
-
-  const handleGoHome = () => {
-    router.push("/");
-  };
-
   const selectedProducts = useMemo(() => {
     return products.filter((product) => (quantities[product.id] || 0) > 0);
   }, [products, quantities]);
@@ -129,160 +121,126 @@ export default function Home() {
   };
 
   return (
-    <div className="flex min-h-screen flex-col items-center bg-zinc-50 font-sans text-black dark:bg-black dark:text-white">
-      <main className="flex w-full max-w-6xl flex-1 flex-col bg-white px-6 py-10 dark:bg-black">
-        {/* 상단 바 */}
-        <div className="relative mb-4 flex items-center border border-zinc-300 bg-zinc-100 px-6 py-4 dark:border-zinc-700 dark:bg-zinc-900">
-          <button
-            onClick={handleGoHome}
-            className="text-lg font-medium hover:opacity-80"
-          >
-            메인
-          </button>
-
-          <button
-            onClick={handleGoHome}
-            className="absolute left-1/2 -translate-x-1/2 text-2xl font-bold tracking-wide hover:opacity-80"
-          >
-            Grids & Circles
-          </button>
-
-          <button
-            onClick={handleOrderSearch}
-            className="ml-auto text-lg font-medium hover:opacity-80"
-          >
-            주문조회
-          </button>
+    <>
+      {loading ? (
+        <div className="flex flex-1 items-center justify-center py-20 text-lg">
+          로딩 중...
         </div>
-
-        {/* 안내 문구 */}
-        <div className="mb-6 flex items-center justify-center border border-zinc-200 bg-zinc-50 py-3 text-base dark:border-zinc-700 dark:bg-zinc-900">
-        당일 오후 2시 이후의 주문 건은 다음 날 배송이 시작됩니다.
+      ) : error ? (
+        <div className="flex flex-1 items-center justify-center py-20 text-lg text-red-500">
+          {error}
         </div>
-
-        {/* 본문 */}
-        {loading ? (
-          <div className="flex flex-1 items-center justify-center py-20 text-lg">
-            로딩 중...
-          </div>
-        ) : error ? (
-          <div className="flex flex-1 items-center justify-center py-20 text-lg text-red-500">
-            {error}
-          </div>
-        ) : products.length === 0 ? (
-          <div className="flex flex-1 items-center justify-center py-20 text-lg">
-            상품이 없습니다.
-          </div>
-        ) : (
-          <>
-            <div className="flex flex-col gap-4">
-              {products.map((product) => (
-                <div
-                  key={product.id}
-                  className="flex items-center justify-between border border-zinc-300 bg-zinc-50 px-6 py-5 dark:border-zinc-700 dark:bg-zinc-900"
-                >
-                  <div className="flex items-center gap-6">
-                    <div className="relative h-24 w-24 overflow-hidden border border-zinc-300 bg-white dark:border-zinc-700">
-                      <Image
-                        src={productImages[product.id] || "/images/default.png"}
-                        alt={product.name}
-                        fill
-                        className="object-cover"
-                      />
-                    </div>
-
-                    <div className="flex flex-col gap-2">
-                      <div className="flex min-h-[48px] min-w-[320px] items-center border border-zinc-300 bg-white px-4 text-xl dark:border-zinc-700 dark:bg-zinc-800">
-                        {product.name}
-                      </div>
-
-                      <div className="flex min-h-[40px] min-w-[180px] items-center border border-zinc-300 bg-white px-4 text-lg dark:border-zinc-700 dark:bg-zinc-800">
-                        {product.price.toLocaleString()}원
-                      </div>
-                    </div>
+      ) : products.length === 0 ? (
+        <div className="flex flex-1 items-center justify-center py-20 text-lg">
+          상품이 없습니다.
+        </div>
+      ) : (
+        <>
+          <div className="flex flex-col gap-4">
+            {products.map((product) => (
+              <div
+                key={product.id}
+                className="flex items-center justify-between border border-zinc-300 bg-zinc-50 px-6 py-5 dark:border-zinc-700 dark:bg-zinc-900"
+              >
+                <div className="flex items-center gap-6">
+                  <div className="relative h-24 w-24 overflow-hidden border border-zinc-300 bg-white dark:border-zinc-700">
+                    <Image
+                      src={productImages[product.id] || "/images/default.png"}
+                      alt={product.name}
+                      fill
+                      sizes="96px"
+                      className="object-cover"
+                    />
                   </div>
 
-                  <div className="flex items-center gap-2">
-                    <button
-                      onClick={() => handleDecrease(product.id)}
-                      className="flex h-11 w-11 items-center justify-center border border-zinc-300 bg-zinc-200 text-xl font-bold transition-colors hover:bg-zinc-300 dark:border-zinc-600 dark:bg-zinc-700 dark:hover:bg-zinc-600"
-                    >
-                      -
-                    </button>
-
-                    <div className="flex h-11 w-14 items-center justify-center border border-zinc-300 bg-white text-lg dark:border-zinc-700 dark:bg-zinc-800">
-                      {quantities[product.id] || 0}
+                  <div className="flex flex-col gap-2">
+                    <div className="flex min-h-[48px] min-w-[320px] items-center border border-zinc-300 bg-white px-4 text-xl dark:border-zinc-700 dark:bg-zinc-800">
+                      {product.name}
                     </div>
 
-                    <button
-                      onClick={() => handleIncrease(product.id)}
-                      className="flex h-11 w-11 items-center justify-center border border-zinc-300 bg-zinc-200 text-xl font-bold transition-colors hover:bg-zinc-300 dark:border-zinc-600 dark:bg-zinc-700 dark:hover:bg-zinc-600"
-                    >
-                      +
-                    </button>
+                    <div className="flex min-h-[40px] min-w-[180px] items-center border border-zinc-300 bg-white px-4 text-lg dark:border-zinc-700 dark:bg-zinc-800">
+                      {product.price.toLocaleString()}원
+                    </div>
                   </div>
                 </div>
-              ))}
-            </div>
 
-            {/* 선택한 상품 요약 */}
-            <div className="mt-8 border border-zinc-300 bg-zinc-50 p-6 dark:border-zinc-700 dark:bg-zinc-900">
-              <h2 className="mb-4 text-xl font-semibold">선택한 상품</h2>
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => handleDecrease(product.id)}
+                    className="flex h-11 w-11 items-center justify-center border border-zinc-300 bg-zinc-200 text-xl font-bold transition-colors hover:bg-zinc-300 dark:border-zinc-600 dark:bg-zinc-700 dark:hover:bg-zinc-600"
+                  >
+                    -
+                  </button>
 
-              {selectedProducts.length === 0 ? (
-                <p className="text-zinc-500 dark:text-zinc-400">
-                  아직 선택한 상품이 없습니다.
-                </p>
-              ) : (
-                <div className="flex flex-col gap-3">
-                  {selectedProducts.map((product) => {
-                    const quantity = quantities[product.id] || 0;
-                    const itemTotal = product.price * quantity;
+                  <div className="flex h-11 w-14 items-center justify-center border border-zinc-300 bg-white text-lg dark:border-zinc-700 dark:bg-zinc-800">
+                    {quantities[product.id] || 0}
+                  </div>
 
-                    return (
-                      <div
-                        key={product.id}
-                        className="flex items-center justify-between border-b border-zinc-200 pb-3 dark:border-zinc-700"
-                      >
-                        <div className="flex flex-col">
-                          <span className="font-medium">{product.name}</span>
-                          <span className="text-sm text-zinc-500 dark:text-zinc-400">
-                            {product.price.toLocaleString()}원 × {quantity}개
-                          </span>
-                        </div>
-
-                        <div className="font-semibold">
-                          {itemTotal.toLocaleString()}원
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
-              )}
-
-              <div className="mt-5 flex items-center justify-between border-t border-zinc-200 pt-4 dark:border-zinc-700">
-                <div className="text-base">
-                  총 선택 수량:{" "}
-                  <span className="font-bold">{totalSelectedCount}개</span>
-                </div>
-                <div className="text-lg font-bold">
-                  총 금액: {totalPrice.toLocaleString()}원
+                  <button
+                    onClick={() => handleIncrease(product.id)}
+                    className="flex h-11 w-11 items-center justify-center border border-zinc-300 bg-zinc-200 text-xl font-bold transition-colors hover:bg-zinc-300 dark:border-zinc-600 dark:bg-zinc-700 dark:hover:bg-zinc-600"
+                  >
+                    +
+                  </button>
                 </div>
               </div>
-            </div>
+            ))}
+          </div>
 
-            {/* 하단 버튼 */}
-            <div className="mt-6 flex justify-end">
-              <button
-                onClick={handleSubmitOrder}
-                className="rounded-md bg-black px-8 py-3 text-lg font-medium text-white transition-colors hover:bg-zinc-800 dark:bg-white dark:text-black dark:hover:bg-zinc-200"
-              >
-                담기
-              </button>
+          <div className="mt-8 border border-zinc-300 bg-zinc-50 p-6 dark:border-zinc-700 dark:bg-zinc-900">
+            <h2 className="mb-4 text-xl font-semibold">선택한 상품</h2>
+
+            {selectedProducts.length === 0 ? (
+              <p className="text-zinc-500 dark:text-zinc-400">
+                아직 선택한 상품이 없습니다.
+              </p>
+            ) : (
+              <div className="flex flex-col gap-3">
+                {selectedProducts.map((product) => {
+                  const quantity = quantities[product.id] || 0;
+                  const itemTotal = product.price * quantity;
+
+                  return (
+                    <div
+                      key={product.id}
+                      className="flex items-center justify-between border-b border-zinc-200 pb-3 dark:border-zinc-700"
+                    >
+                      <div className="flex flex-col">
+                        <span className="font-medium">{product.name}</span>
+                        <span className="text-sm text-zinc-500 dark:text-zinc-400">
+                          {product.price.toLocaleString()}원 × {quantity}개
+                        </span>
+                      </div>
+
+                      <div className="font-semibold">
+                        {itemTotal.toLocaleString()}원
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+
+            <div className="mt-5 flex items-center justify-between border-t border-zinc-200 pt-4 dark:border-zinc-700">
+              <div className="text-base">
+                총 선택 수량: <span className="font-bold">{totalSelectedCount}개</span>
+              </div>
+              <div className="text-lg font-bold">
+                총 금액: {totalPrice.toLocaleString()}원
+              </div>
             </div>
-          </>
-        )}
-      </main>
-    </div>
+          </div>
+
+          <div className="mt-6 flex justify-end">
+            <button
+              onClick={handleSubmitOrder}
+              className="rounded-md bg-black px-8 py-3 text-lg font-medium text-white transition-colors hover:bg-zinc-800 dark:bg-white dark:text-black dark:hover:bg-zinc-200"
+            >
+              담기
+            </button>
+          </div>
+        </>
+      )}
+    </>
   );
 }
