@@ -23,6 +23,10 @@ export default function AdminProductPage() {
   const [loading, setLoading] = useState(true);
   const router = useRouter();
 
+  // 추가 모드 상태 관리
+  const [isAdding, setIsAdding] = useState(false);
+  const [addForm, setAddForm] = useState({ name: '', price: 0 });
+
   // 수정 모드 상태 관리
   const [isEditing, setIsEditing] = useState<number | null>(null);
   const [editForm, setEditForm] = useState({ name: '', price: 0 });
@@ -43,9 +47,34 @@ export default function AdminProductPage() {
       });
   }, []);
 
-  // ✅ 추가 버튼 클릭 시 (기능 대기 중)
-  const handleAdd = () => {
-    console.log("신규 상품 추가 로직 대기 중");
+  const handleAddStart = () => {
+    setIsAdding(true);
+    setAddForm({ name: '', price: 0 }); // 초기화
+  };
+
+  const handleAddSubmit = async () => {
+    if (!addForm.name || addForm.price <= 0) {
+      alert("이름과 가격을 올바르게 입력해주세요.");
+      return;
+    }
+
+    try {
+      const res = await fetch('http://localhost:8080/admin/products', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(addForm),
+      });
+
+      if (res.ok) {
+        const newProduct = await res.json();
+        // 백엔드 응답 구조가 { data: { ... } } 라면 newProduct.data 사용
+        setProducts((prev) => [...prev, newProduct]);
+        setIsAdding(false);
+        alert('등록 성공!');
+      }
+    } catch (error) {
+      alert('등록 중 오류 발생');
+    }
   };
 
   const startEdit = (product: Product) => {
@@ -95,7 +124,7 @@ export default function AdminProductPage() {
   return (
     <div className="flex min-h-screen flex-col items-center bg-zinc-50 text-black font-sans">
       <main className="flex w-full max-w-6xl flex-1 flex-col bg-white px-6 py-10 shadow-sm border-x border-zinc-200">
-        
+
         {/* 상단 바 */}
         <div className="relative mb-8 flex items-center border border-zinc-300 bg-zinc-100 px-6 py-4">
           <Link href="/admin/products" className="text-lg font-bold hover:text-blue-600 transition-colors">
@@ -119,9 +148,9 @@ export default function AdminProductPage() {
           <h1 className="text-2xl font-bold text-zinc-800 border-l-4 border-black pl-4">
             상품 목록
           </h1>
-          
+
           <button
-            onClick={handleAdd}
+            onClick={handleAddStart}
             className="px-6 py-2 bg-black text-white font-bold hover:bg-zinc-800 transition-colors shadow-sm"
           >
             상품 추가
@@ -139,7 +168,54 @@ export default function AdminProductPage() {
                 <th className="p-4 w-48 text-center">기능</th>
               </tr>
             </thead>
+
+            {/* <tbody> 하나만 사용! */}
             <tbody>
+              {/* 1. 추가 입력 행 (활성화 시 맨 위에 등장) */}
+              {isAdding && (
+                <tr className="border-b-2 border-blue-400 bg-blue-50 transition-all">
+                  <td className="p-4 text-blue-600 font-bold">NEW</td>
+                  <td className="p-4">
+                    <div className="h-16 w-16 border border-dashed border-blue-300 bg-white flex items-center justify-center text-zinc-400 text-xs text-center">
+                      이미지<br />자동설정
+                    </div>
+                  </td>
+                  <td className="p-4">
+                    <input
+                      className="border border-blue-300 px-2 py-1 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      placeholder="새 상품명 입력"
+                      value={addForm.name}
+                      onChange={(e) => setAddForm({ ...addForm, name: e.target.value })}
+                      autoFocus
+                    />
+                  </td>
+                  <td className="p-4">
+                    <input
+                      type="number"
+                      className="border border-blue-300 px-2 py-1 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      placeholder="가격 입력"
+                      value={addForm.price || ''}
+                      onChange={(e) => setAddForm({ ...addForm, price: Number(e.target.value) })}
+                    />
+                  </td>
+                  <td className="p-4 text-center">
+                    <div className="flex justify-center gap-2">
+                      <button
+                        onClick={handleAddSubmit}
+                        className="px-4 py-1.5 bg-blue-600 text-white font-bold hover:bg-blue-700 shadow-sm"
+                      >
+                        저장
+                      </button>
+                      <button
+                        onClick={() => setIsAdding(false)}
+                        className="px-4 py-1.5 bg-zinc-400 text-white font-bold hover:bg-zinc-500"
+                      >
+                        취소
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              )}
               {products.map((product) => (
                 <tr
                   key={product.id}
@@ -150,7 +226,7 @@ export default function AdminProductPage() {
                   <td className="p-4">
                     <div className="h-16 w-16 flex-shrink-0 overflow-hidden border border-zinc-200 bg-zinc-100">
                       <Image
-                        src={productImages[product.id] || "/images/default.png"}
+                        src={productImages[product.id] || "/images/1.png"} 
                         alt={product.name}
                         width={64}
                         height={64}

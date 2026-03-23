@@ -61,7 +61,7 @@ export default function ProductManagement() {
           throw new Error("가격은 0 이상의 숫자여야 합니다.");
 
         if (mode === "create") {
-          const res = await fetch(`${API_BASE_URL}/api/admin/products`, {
+          const res = await fetch(`${API_BASE_URL}/admin/products`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(body),
