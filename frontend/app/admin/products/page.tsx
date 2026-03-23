@@ -83,6 +83,10 @@ export default function AdminProductPage() {
   };
 
   const handleModify = async (id: number) => {
+    if (!editForm.name || editForm.price <= 0) {
+      alert("이름과 가격을 올바르게 입력해주세요.");
+      return;
+    }
     try {
       const res = await fetch(`http://localhost:8080/admin/products/${id}`, {
         method: 'PUT',
