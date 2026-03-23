@@ -178,13 +178,13 @@ export default function AdminProductPage() {
                   <div className="flex justify-center gap-2">
                     <button
                       onClick={handleAddSubmit}
-                      className="bg-black text-white px-5 py-2 text-xs font-bold hover:bg-zinc-800 transition-colors dark:bg-white dark:text-black"
+                      className="bg-black text-white px-5 py-2 text-xs font-bold hover:bg-zinc-800 active:scale-95 transition-all dark:bg-zinc-100 dark:text-black dark:hover:bg-zinc-200"
                     >
                       저장
                     </button>
                     <button
                       onClick={() => setIsAdding(false)}
-                      className="bg-zinc-100 text-zinc-500 px-5 py-2 text-xs font-bold hover:bg-zinc-200 transition-colors dark:bg-zinc-800 dark:text-zinc-400"
+                      className="bg-zinc-100 text-zinc-500 px-5 py-2 text-xs font-bold hover:bg-zinc-200 active:scale-95 transition-all dark:bg-zinc-800 dark:text-zinc-400 dark:hover:bg-zinc-700"
                     >
                       취소
                     </button>
@@ -197,14 +197,14 @@ export default function AdminProductPage() {
             {products.map((product) => (
               <tr
                 key={product.id}
-                className="hover:bg-zinc-100 dark:hover:bg-zinc-800/50 transition-colors bg-white dark:bg-black"
+                className="transition-colors bg-white dark:bg-black"
               >
                 <td className="px-8 py-6 font-mono text-zinc-400 font-black">#{product.id}</td>
 
                 <td className="px-8 py-6 flex justify-center">
                   <div className="h-20 w-20 flex-shrink-0 overflow-hidden border border-zinc-300 bg-white dark:border-zinc-800">
                     <Image
-                      src={productImages[product.id] || "/images/default.png"}
+                      src={productImages[product.id] || "/images/1.png"}
                       alt={product.name}
                       width={80}
                       height={80}
@@ -248,14 +248,14 @@ export default function AdminProductPage() {
                     {isEditing === product.id ? (
                       <button
                         onClick={() => handleModify(product.id)}
-                        className="bg-black text-white px-5 py-2 text-xs font-bold hover:bg-zinc-800 transition-colors dark:bg-white dark:text-black"
+                        className="bg-black text-white px-5 py-2 text-xs font-bold hover:bg-zinc-800 active:scale-95 transition-all dark:bg-zinc-100 dark:text-black dark:hover:bg-zinc-200"
                       >
                         저장
                       </button>
                     ) : (
                       <button
                         onClick={() => startEdit(product)}
-                        className="bg-zinc-100 text-zinc-600 px-5 py-2 text-xs font-bold hover:bg-zinc-200 transition-colors dark:bg-zinc-800 dark:text-zinc-400"
+                        className="bg-zinc-100 text-zinc-600 px-5 py-2 text-xs font-bold hover:bg-zinc-200 active:scale-95 transition-all dark:bg-zinc-800 dark:text-zinc-400 dark:hover:bg-zinc-700"
                       >
                         수정
                       </button>
