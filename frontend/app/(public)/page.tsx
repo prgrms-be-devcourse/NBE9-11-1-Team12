@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
+import { fetchApi } from "../lib/client";
 
 type Product = {
   id: number;
@@ -32,15 +33,9 @@ export default function Home() {
         setLoading(true);
         setError("");
 
-        const res = await fetch("http://localhost:8080/products", {
+        const data: Product[] = await fetchApi("/products", {
           cache: "no-store",
         });
-
-        if (!res.ok) {
-          throw new Error("상품 목록 조회 실패");
-        }
-
-        const data: Product[] = await res.json();
 
         if (!isMounted) return;
 

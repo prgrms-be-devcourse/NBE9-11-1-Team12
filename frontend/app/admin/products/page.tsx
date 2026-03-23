@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { fetchApi } from '@/app/lib/client';
 
 type Product = {
   id: number;
@@ -28,11 +29,7 @@ export default function AdminProductPage() {
   const [editForm, setEditForm] = useState({ name: '', price: 0 });
 
   useEffect(() => {
-    fetch('http://localhost:8080/admin/products')
-      .then((res) => {
-        if (!res.ok) throw new Error('목록 로드 실패');
-        return res.json();
-      })
+    fetchApi('/admin/products')
       .then((data) => {
         setProducts(data);
         setLoading(false);
@@ -55,18 +52,15 @@ export default function AdminProductPage() {
     }
 
     try {
-      const res = await fetch('http://localhost:8080/admin/products', {
+      const newProduct = await fetchApi('/admin/products', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(addForm),
       });
 
-      if (res.ok) {
-        const newProduct = await res.json();
-        setProducts((prev) => [...prev, newProduct]);
-        setIsAdding(false);
-        alert('등록 성공!');
-      }
+      setProducts((prev) => [...prev, newProduct]);
+      setIsAdding(false);
+      alert('등록 성공!');
     } catch (error) {
       alert('등록 중 오류 발생');
     }
@@ -83,19 +77,17 @@ export default function AdminProductPage() {
       return;
     }
     try {
-      const res = await fetch(`http://localhost:8080/admin/products/${id}`, {
+      await fetchApi(`/admin/products/${id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(editForm),
       });
 
-      if (res.ok) {
-        setProducts((prev) =>
-          prev.map((p) => (p.id === id ? { ...p, ...editForm } : p))
-        );
-        setIsEditing(null);
-        alert('수정 완료!');
-      }
+      setProducts((prev) =>
+        prev.map((p) => (p.id === id ? { ...p, ...editForm } : p))
+      );
+      setIsEditing(null);
+      alert('수정 완료!');
     } catch (error) {
       alert('수정 중 오류 발생');
     }
@@ -105,11 +97,9 @@ export default function AdminProductPage() {
     if (!confirm('정말 삭제하시겠습니까?')) return;
 
     try {
-      const res = await fetch(`http://localhost:8080/admin/products/${id}`, {
+      await fetchApi(`/admin/products/${id}`, {
         method: 'DELETE',
       });
-
-      if (!res.ok) throw new Error('삭제 실패');
 
       setProducts((prev) => prev.filter((p) => p.id !== id));
       alert('삭제되었습니다.');

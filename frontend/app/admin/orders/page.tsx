@@ -1,5 +1,6 @@
 "use client";
 
+import { fetchApi } from "@/app/lib/client";
 import { AdminOrderDto } from "@/app/type/admin-order";
 import { useEffect, useMemo, useState } from "react";
 
@@ -20,8 +21,7 @@ export default function Orders() {
     const [orders, setOrders] = useState<AdminOrderDto[] | null>(null);
 
     useEffect(() => {
-        fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/admin/orders`)
-            .then(res => res.json())
+        fetchApi(`/admin/orders`)
             .then(data => {
                 const sorted = (data as AdminOrderDto[]).sort((a, b) =>
                     new Date(b.createdDate).getTime() - new Date(a.createdDate).getTime()
@@ -31,12 +31,9 @@ export default function Orders() {
     }, []);
 
     const handleCompleteOrder = (id: number) => {
-        fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/admin/orders/${id}/status`, {
+        fetchApi(`/admin/orders/${id}/status`, {
             method: "PUT"
         })
-            .then(res => {
-                if (!res.ok) throw new Error(`서버 오류: ${res.status}`);
-            })
             .then(() => onCompleteOrderSuccess(id))
             .catch(err => alert("완료 처리 실패"));
     }
