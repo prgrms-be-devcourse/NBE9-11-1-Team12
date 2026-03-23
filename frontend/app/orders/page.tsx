@@ -131,9 +131,16 @@ export default function OrderSearchPage() {
                                 <div className="flex flex-col gap-4">
                                     {order.orderItems.map((item) => (
                                         <div key={item.productId} className="flex gap-4 items-center p-2">
-                                            {/* 상품 사진 자리 (테두리만) */}
-                                            <div className="border-2 border-gray-100 w-20 h-20 rounded-lg flex items-center justify-center text-xs text-gray-400 shrink-0 bg-gray-50">
-                                                IMAGE
+                                            {/* 상품 사진 자리 */}
+                                            <div className="relative w-20 h-20 rounded-lg overflow-hidden border-2 border-gray-100 shrink-0">
+                                                <img
+                                                    src={`/images/${item.productId}.png`}
+                                                    alt={item.productName}
+                                                    className="w-full h-full object-cover"
+                                                    onError={(e) => {
+                                                        (e.target as HTMLImageElement).src = '/images/file.svg';
+                                                    }}
+                                                />
                                             </div>
                                             <div className="flex-grow">
                                                 <div className="font-bold text-gray-800">{item.productName}</div>
