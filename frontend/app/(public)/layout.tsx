@@ -9,24 +9,24 @@ export default function Layout({
         <div className="flex min-h-screen flex-col items-center bg-zinc-50 text-black dark:bg-black dark:text-white">
             <main className="flex w-full max-w-6xl flex-1 flex-col bg-white px-6 py-10 dark:bg-black">
                 {/* 공통 상단 바 */}
-                <div className="relative mb-4 flex items-center border border-zinc-300 bg-zinc-100 px-6 py-4 dark:border-zinc-700 dark:bg-zinc-900">
+                <div className="relative mb-4 flex items-center border border-zinc-200 bg-white px-6 py-4 dark:border-zinc-800 dark:bg-zinc-900 shadow-sm">
                     <Link
                         href="/"
-                        className="text-lg font-medium hover:opacity-80"
+                        className="text-sm font-bold hover:opacity-80 transition-opacity"
                     >
-                        메인
+                        메인화면
                     </Link>
 
                     <Link
                         href="/"
-                        className="absolute left-1/2 -translate-x-1/2 text-2xl font-bold tracking-wide hover:opacity-80"
+                        className="absolute left-1/2 -translate-x-1/2 text-xl font-black tracking-tighter hover:opacity-80 transition-opacity uppercase"
                     >
                         Grids & Circles
                     </Link>
 
                     <Link
                         href="/orders"
-                        className="ml-auto text-lg font-medium hover:opacity-80"
+                        className="ml-auto text-sm font-bold hover:opacity-80 transition-opacity"
                     >
                         주문조회
                     </Link>

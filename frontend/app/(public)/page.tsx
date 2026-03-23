@@ -161,32 +161,32 @@ export default function Home() {
                     />
                   </div>
 
-                  <div className="flex flex-col gap-2">
-                    <div className="flex min-h-[48px] min-w-[320px] items-center border border-zinc-300 bg-white px-4 text-xl dark:border-zinc-700 dark:bg-zinc-800">
+                  <div className="flex flex-col gap-1.5 flex-grow">
+                    <div className="flex min-h-[40px] items-center text-lg font-bold dark:text-zinc-100">
                       {product.name}
                     </div>
 
-                    <div className="flex min-h-[40px] min-w-[180px] items-center border border-zinc-300 bg-white px-4 text-lg dark:border-zinc-700 dark:bg-zinc-800">
+                    <div className="flex items-center text-sm font-bold text-zinc-500 dark:text-zinc-400">
                       {product.price.toLocaleString()}원
                     </div>
                   </div>
                 </div>
 
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-1.5 border border-zinc-200 bg-white dark:border-zinc-800 dark:bg-black p-1">
                   <button
                     onClick={() => handleDecrease(product.id)}
-                    className="flex h-11 w-11 items-center justify-center border border-zinc-300 bg-zinc-200 text-xl font-bold transition-colors hover:bg-zinc-300 dark:border-zinc-600 dark:bg-zinc-700 dark:hover:bg-zinc-600"
+                    className="flex h-9 w-9 items-center justify-center bg-zinc-50 text-base font-bold transition-all hover:bg-zinc-200 active:scale-95 dark:bg-zinc-900 dark:hover:bg-zinc-800"
                   >
                     -
                   </button>
 
-                  <div className="flex h-11 w-14 items-center justify-center border border-zinc-300 bg-white text-lg dark:border-zinc-700 dark:bg-zinc-800">
+                  <div className="flex h-9 w-10 items-center justify-center text-sm font-black dark:text-zinc-200">
                     {quantities[product.id] || 0}
                   </div>
 
                   <button
                     onClick={() => handleIncrease(product.id)}
-                    className="flex h-11 w-11 items-center justify-center border border-zinc-300 bg-zinc-200 text-xl font-bold transition-colors hover:bg-zinc-300 dark:border-zinc-600 dark:bg-zinc-700 dark:hover:bg-zinc-600"
+                    className="flex h-9 w-9 items-center justify-center bg-zinc-50 text-base font-bold transition-all hover:bg-zinc-200 active:scale-95 dark:bg-zinc-900 dark:hover:bg-zinc-800"
                   >
                     +
                   </button>
@@ -195,9 +195,8 @@ export default function Home() {
             ))}
           </div>
 
-          {/* 선택한 상품 요약 */}
-          <div className="mt-8 border border-zinc-300 bg-zinc-50 p-6 dark:border-zinc-700 dark:bg-zinc-900">
-            <h2 className="mb-4 text-xl font-semibold">선택한 상품</h2>
+          <div className="mt-12 border border-zinc-200 bg-zinc-50 p-8 dark:border-zinc-800 dark:bg-zinc-900/50">
+            <h2 className="mb-6 text-sm font-black text-zinc-400 uppercase tracking-widest border-b border-zinc-200 pb-2 dark:border-zinc-800">장바구니 확인</h2>
 
             {selectedProducts.length === 0 ? (
               <p className="text-zinc-500 dark:text-zinc-400">
@@ -230,24 +229,24 @@ export default function Home() {
               </div>
             )}
 
-            <div className="mt-5 flex items-center justify-between border-t border-zinc-200 pt-4 dark:border-zinc-700">
-              <div className="text-base">
-                총 선택 수량:{" "}
-                <span className="font-bold">{totalSelectedCount}개</span>
+            <div className="mt-8 flex items-center justify-between border-t border-zinc-200 pt-6 dark:border-zinc-800">
+              <div className="text-sm font-bold text-zinc-500 uppercase tracking-tight">
+                선택 수량:{" "}
+                <span className="text-lg text-zinc-900 dark:text-zinc-100">{totalSelectedCount}개</span>
               </div>
-              <div className="text-lg font-bold">
-                총 금액: {totalPrice.toLocaleString()}원
+              <div className="text-2xl font-black text-zinc-900 dark:text-white">
+                <span className="text-[10px] uppercase font-bold text-zinc-400 tracking-wider align-middle mr-2">최종 합계</span>
+                {totalPrice.toLocaleString()}원
               </div>
             </div>
           </div>
 
-          {/* 하단 버튼 */}
-          <div className="mt-6 flex justify-end">
+          <div className="mt-8 flex justify-end">
             <button
               onClick={handleSubmitOrder}
-              className="rounded-md bg-black px-8 py-3 text-lg font-medium text-white transition-colors hover:bg-zinc-800 dark:bg-white dark:text-black dark:hover:bg-zinc-200"
+              className="w-full md:w-auto bg-black px-12 py-5 text-sm font-bold text-white transition-all hover:bg-zinc-800 active:scale-95 dark:bg-white dark:text-black dark:hover:bg-zinc-200 uppercase tracking-widest shadow-lg"
             >
-              담기
+              주문하기
             </button>
           </div>
         </>
