@@ -50,4 +50,13 @@ public class GlobalExceptionHandler {
                 "잘못된 형식의 요청 데이터입니다."
             );
     }
+
+    @ExceptionHandler(IllegalStateException.class)
+    @ResponseBody
+    public RsData<Void> handleException(IllegalStateException e) {
+        return new RsData<Void>(
+                "400-3",
+                e.getMessage()
+        );
+    }
 }

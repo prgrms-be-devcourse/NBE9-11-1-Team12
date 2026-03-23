@@ -23,11 +23,9 @@ export default function AdminProductPage() {
   const [loading, setLoading] = useState(true);
   const router = useRouter();
 
-  // 추가 모드 상태 관리
   const [isAdding, setIsAdding] = useState(false);
   const [addForm, setAddForm] = useState({ name: '', price: 0 });
 
-  // 수정 모드 상태 관리
   const [isEditing, setIsEditing] = useState<number | null>(null);
   const [editForm, setEditForm] = useState({ name: '', price: 0 });
 
@@ -49,7 +47,7 @@ export default function AdminProductPage() {
 
   const handleAddStart = () => {
     setIsAdding(true);
-    setAddForm({ name: '', price: 0 }); // 초기화
+    setAddForm({ name: '', price: 0 });
   };
 
   const handleAddSubmit = async () => {
@@ -67,7 +65,6 @@ export default function AdminProductPage() {
 
       if (res.ok) {
         const newProduct = await res.json();
-        // 백엔드 응답 구조가 { data: { ... } } 라면 newProduct.data 사용
         setProducts((prev) => [...prev, newProduct]);
         setIsAdding(false);
         alert('등록 성공!');
@@ -123,14 +120,14 @@ export default function AdminProductPage() {
     }
   };
 
-  if (loading) return <div className="p-10 text-center text-lg font-bold">로딩 중...</div>;
+  if (loading) return <div className="p-10 text-center text-lg font-bold dark:text-white">로딩 중...</div>;
 
   return (
-    <div className="flex min-h-screen flex-col items-center bg-zinc-50 text-black font-sans">
-      <main className="flex w-full max-w-6xl flex-1 flex-col bg-white px-6 py-10 shadow-sm border-x border-zinc-200">
+    <div className="flex min-h-screen flex-col items-center bg-zinc-50 text-black font-sans dark:bg-black dark:text-white">
+      <main className="flex w-full max-w-6xl flex-1 flex-col bg-white px-6 py-10 shadow-sm border-x border-zinc-200 dark:bg-black dark:border-zinc-800">
 
         {/* 상단 바 */}
-        <div className="relative mb-8 flex items-center border border-zinc-300 bg-zinc-100 px-6 py-4">
+        <div className="relative mb-8 flex items-center border border-zinc-300 bg-zinc-100 px-6 py-4 dark:border-zinc-700 dark:bg-zinc-900">
           <Link href="/admin/products" className="text-lg font-bold hover:text-blue-600 transition-colors">
             상품관리
           </Link>
@@ -142,29 +139,29 @@ export default function AdminProductPage() {
             Grids & Circles
           </button>
 
-          <Link href="/admin/orders" className="ml-auto text-lg text-zinc-600 hover:text-black transition-colors">
+          <Link href="/admin/orders" className="ml-auto text-lg text-zinc-600 hover:text-black dark:hover:text-white transition-colors">
             주문관리
           </Link>
         </div>
 
-        {/* ✅ 제목 및 추가 버튼 섹션 (한 줄 배치) */}
+        {/* 제목 및 추가 버튼 */}
         <div className="flex items-center justify-between mb-6 px-2">
-          <h1 className="text-2xl font-bold text-zinc-800 border-l-4 border-black pl-4">
+          <h1 className="text-2xl font-bold text-zinc-800 border-l-4 border-black pl-4 dark:text-white dark:border-white">
             상품 목록
           </h1>
 
           <button
             onClick={handleAddStart}
-            className="px-6 py-2 bg-black text-white font-bold hover:bg-zinc-800 transition-colors shadow-sm"
+            className="px-6 py-2 bg-black text-white font-bold hover:bg-zinc-800 transition-colors shadow-sm dark:bg-white dark:text-black dark:hover:bg-zinc-200"
           >
             상품 추가
           </button>
         </div>
 
-        <div className="overflow-hidden border border-zinc-300 bg-white shadow-sm">
+        <div className="overflow-hidden border border-zinc-300 bg-white shadow-sm dark:border-zinc-700 dark:bg-zinc-900">
           <table className="w-full border-collapse text-left">
             <thead>
-              <tr className="border-b border-zinc-300 bg-zinc-100 text-zinc-700 font-bold">
+              <tr className="border-b border-zinc-300 bg-zinc-100 text-zinc-700 font-bold dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-300">
                 <th className="p-4 w-16">ID</th>
                 <th className="p-4 w-24">이미지</th>
                 <th className="p-4">상품명</th>
@@ -173,20 +170,19 @@ export default function AdminProductPage() {
               </tr>
             </thead>
 
-            {/* <tbody> 하나만 사용! */}
             <tbody>
-              {/* 1. 추가 입력 행 (활성화 시 맨 위에 등장) */}
+              {/* 추가 입력 행 */}
               {isAdding && (
-                <tr className="border-b-2 border-blue-400 bg-blue-50 transition-all">
-                  <td className="p-4 text-blue-600 font-bold">NEW</td>
+                <tr className="border-b-2 border-blue-400 bg-blue-50 transition-all dark:bg-blue-900/30">
+                  <td className="p-4 text-blue-600 font-bold dark:text-blue-400">NEW</td>
                   <td className="p-4">
-                    <div className="h-16 w-16 border border-dashed border-blue-300 bg-white flex items-center justify-center text-zinc-400 text-xs text-center">
+                    <div className="h-16 w-16 border border-dashed border-blue-300 bg-white flex items-center justify-center text-zinc-400 text-xs text-center dark:bg-zinc-800 dark:border-blue-700">
                       이미지<br />자동설정
                     </div>
                   </td>
                   <td className="p-4">
                     <input
-                      className="border border-blue-300 px-2 py-1 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="border border-blue-300 px-2 py-1 w-full focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-zinc-800 dark:text-white dark:border-blue-700"
                       placeholder="새 상품명 입력"
                       value={addForm.name}
                       onChange={(e) => setAddForm({ ...addForm, name: e.target.value })}
@@ -196,7 +192,7 @@ export default function AdminProductPage() {
                   <td className="p-4">
                     <input
                       type="number"
-                      className="border border-blue-300 px-2 py-1 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="border border-blue-300 px-2 py-1 w-full focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-zinc-800 dark:text-white dark:border-blue-700"
                       placeholder="가격 입력"
                       value={addForm.price || ''}
                       onChange={(e) => setAddForm({ ...addForm, price: Number(e.target.value) })}
@@ -220,15 +216,17 @@ export default function AdminProductPage() {
                   </td>
                 </tr>
               )}
+
+              {/* 상품 목록 행 */}
               {products.map((product) => (
                 <tr
                   key={product.id}
-                  className="border-b border-zinc-200 hover:bg-zinc-50 transition-colors"
+                  className="border-b border-zinc-200 hover:bg-zinc-50 transition-colors dark:border-zinc-800 dark:hover:bg-zinc-800/50"
                 >
-                  <td className="p-4 text-zinc-500">{product.id}</td>
+                  <td className="p-4 text-zinc-500 dark:text-zinc-400">{product.id}</td>
 
                   <td className="p-4">
-                    <div className="h-16 w-16 flex-shrink-0 overflow-hidden border border-zinc-200 bg-zinc-100">
+                    <div className="h-16 w-16 flex-shrink-0 overflow-hidden border border-zinc-200 bg-zinc-100 dark:border-zinc-700 dark:bg-zinc-800">
                       <Image
                         src={productImages[product.id] || "/images/1.png"} 
                         alt={product.name}
@@ -242,7 +240,7 @@ export default function AdminProductPage() {
                   <td className="p-4 font-medium">
                     {isEditing === product.id ? (
                       <input
-                        className="border border-zinc-300 px-2 py-1 w-full focus:outline-none focus:border-blue-500"
+                        className="border border-zinc-300 px-2 py-1 w-full focus:outline-none focus:border-blue-500 dark:bg-zinc-800 dark:border-zinc-700 dark:text-white"
                         value={editForm.name}
                         onChange={(e) => setEditForm({ ...editForm, name: e.target.value })}
                         autoFocus
@@ -250,18 +248,18 @@ export default function AdminProductPage() {
                     ) : (
                       <Link
                         href={`/admin/products/${product.id}`}
-                        className="font-semibold text-blue-600 hover:underline decoration-2 underline-offset-4"
+                        className="font-semibold text-blue-600 hover:underline decoration-2 underline-offset-4 dark:text-blue-400"
                       >
                         {product.name}
                       </Link>
                     )}
                   </td>
 
-                  <td className="p-4 font-bold text-zinc-800">
+                  <td className="p-4 font-bold text-zinc-800 dark:text-zinc-200">
                     {isEditing === product.id ? (
                       <input
                         type="number"
-                        className="border border-zinc-300 px-2 py-1 w-full focus:outline-none focus:border-blue-500"
+                        className="border border-zinc-300 px-2 py-1 w-full focus:outline-none focus:border-blue-500 dark:bg-zinc-800 dark:border-zinc-700 dark:text-white"
                         value={editForm.price}
                         onChange={(e) => setEditForm({ ...editForm, price: Number(e.target.value) })}
                       />
@@ -272,7 +270,6 @@ export default function AdminProductPage() {
 
                   <td className="p-4 text-center">
                     <div className="flex justify-center gap-2">
-                      {/* ✅ 수정/저장 버튼 */}
                       {isEditing === product.id ? (
                         <button
                           onClick={() => handleModify(product.id)}
@@ -283,16 +280,15 @@ export default function AdminProductPage() {
                       ) : (
                         <button
                           onClick={() => startEdit(product)}
-                          className="px-4 py-1.5 border border-zinc-300 bg-zinc-200 hover:bg-zinc-300 transition-colors"
+                          className="px-4 py-1.5 border border-zinc-300 bg-zinc-200 hover:bg-zinc-300 dark:border-zinc-600 dark:bg-zinc-700 dark:hover:bg-zinc-600 transition-colors"
                         >
                           수정
                         </button>
                       )}
 
-                      {/* ✅ 삭제 버튼 */}
                       <button
                         onClick={() => handleDelete(product.id)}
-                        className="px-4 py-1.5 border border-red-200 bg-red-50 text-red-600 hover:bg-red-100 transition-colors"
+                        className="px-4 py-1.5 border border-red-200 bg-red-50 text-red-600 hover:bg-red-100 dark:bg-red-900/20 dark:border-red-900/30 dark:text-red-400 transition-colors"
                       >
                         삭제
                       </button>
