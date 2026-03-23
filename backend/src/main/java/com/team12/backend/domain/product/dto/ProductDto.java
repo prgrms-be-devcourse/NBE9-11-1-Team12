@@ -8,7 +8,7 @@ public record ProductDto(
         int id,
         String name,
         int price,
-        LocalDateTime createDate,
+        LocalDateTime createdDate,
         LocalDateTime modifiedDate
 ) {
     public ProductDto(Product product) {
