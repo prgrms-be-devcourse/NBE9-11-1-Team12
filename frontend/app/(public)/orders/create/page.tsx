@@ -91,135 +91,139 @@ export default function OrderCreatePage() {
     };
 
     return (
-        <div className="min-h-screen bg-zinc-900 text-white py-10 px-4">
-            <div className="max-w-4xl mx-auto flex flex-col gap-6">
-                <div className="border border-zinc-700 bg-zinc-800 rounded-lg">
-                    <div className="p-6 border-b border-zinc-700">
-                        <h2 className="text-xl font-bold">장바구니(선택한 상품)</h2>
-                    </div>
+        <div className="flex flex-col gap-10">
+            {/* 장바구니 리스트 */}
+            <section>
+                <div className="mb-6 flex items-center gap-4">
+                    <h2 className="text-sm font-black text-zinc-400 uppercase tracking-widest whitespace-nowrap">주문 상품 확인</h2>
+                    <div className="h-px w-full bg-zinc-200 dark:bg-zinc-800"></div>
+                </div>
 
-                    <div className="p-6 flex flex-col gap-4">
-                        {cartItems.length === 0 ? (
-                            <div className="text-zinc-400 text-center py-10">
-                                선택한 상품이 없습니다.
-                            </div>
-                        ) : (
-                            cartItems.map((item) => (
+                <div className="flex flex-col gap-4">
+                    {cartItems.length === 0 ? (
+                        <div className="flex items-center justify-center py-20 border border-dashed border-zinc-300 text-zinc-400 font-bold uppercase tracking-widest italic">
+                            선택한 상품이 없습니다.
+                        </div>
+                    ) : (
+                        <>
+                            {cartItems.map((item) => (
                                 <div
                                     key={`${item.productId}-${item.productName}`}
-                                    className="border border-zinc-700 p-4 flex items-center justify-between gap-4 rounded-lg"
+                                    className="flex flex-wrap md:flex-nowrap gap-8 items-center p-6 border border-zinc-300 bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900"
                                 >
-                                    <div className="flex items-center gap-4 flex-1">
-                                        <div className="relative w-20 h-20 overflow-hidden bg-zinc-700 rounded shrink-0">
-                                            <Image
-                                                src={productImages[item.productId] || "/images/default.png"}
-                                                alt={item.productName}
-                                                fill
-                                                className="object-cover"
-                                            />
-                                        </div>
+                                    <div className="relative w-24 h-24 overflow-hidden border border-zinc-200 bg-white dark:border-zinc-800 shrink-0">
+                                        <Image
+                                            src={productImages[item.productId] || "/images/default.png"}
+                                            alt={item.productName}
+                                            fill
+                                            className="object-cover"
+                                        />
+                                    </div>
 
-                                        <div className="flex flex-col gap-1">
-                                            <div className="font-semibold text-lg">
-                                                {item.productName}
-                                            </div>
-                                            <div className="text-zinc-400">
-                                                가격: {item.price.toLocaleString()}원
-                                            </div>
+                                    <div className="flex-grow flex flex-col gap-1.5 min-w-[200px]">
+                                        <div className="flex min-h-[40px] items-center text-lg font-bold dark:text-zinc-100">
+                                            {item.productName}
+                                        </div>
+                                        <div className="flex gap-4">
+                                            <span className="font-black text-zinc-400 uppercase tracking-widest ml-1">가격: {item.price.toLocaleString()}원</span>
+                                            <span className="font-black text-black dark:text-white uppercase tracking-widest">수량: {item.quantity}</span>
                                         </div>
                                     </div>
 
-                                    <div className="w-24 text-center">
-                                        <div className="bg-zinc-700 py-2 rounded">
-                                            수량 {item.quantity}
+                                    <div className="flex flex-col items-end gap-0.5 px-4 ml-auto">
+                                        <span className="text-[10px] font-bold text-zinc-400 uppercase">소계</span>
+                                        <div className="text-lg font-bold text-zinc-900 dark:text-zinc-100">
+                                            {(item.price * item.quantity).toLocaleString()}원
                                         </div>
-                                    </div>
-
-                                    <div className="w-32 text-center font-semibold">
-                                        {(item.price * item.quantity).toLocaleString()}원
                                     </div>
                                 </div>
-                            ))
-                        )}
-                    </div>
+                            ))}
+                            <div className="flex flex-wrap md:flex-nowrap justify-center gap-12 items-center p-8 border border-zinc-200 bg-zinc-50 dark:border-zinc-800 dark:bg-zinc-900/50">
+                                <div className="flex flex-col items-end gap-1">
+                                    <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest">총 주문 수량</span>
+                                    <span className="text-xl font-black">{totalQuantity}개</span>
+                                </div>
 
-                    <div className="border-t border-zinc-700 grid grid-cols-2">
-                        <div className="p-4 border-r border-zinc-700 text-center">
-                            수량합계: {totalQuantity}개
-                        </div>
-                        <div className="p-4 text-center">
-                            가격합계: {totalPrice.toLocaleString()}원
-                        </div>
-                    </div>
+                                <div className="w-px h-12 bg-zinc-300 dark:bg-zinc-700 mx-4 hidden md:block"></div>
+
+                                <div className="flex flex-col items-end gap-1">
+                                    <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest">총 결제 합계</span>
+                                    <div className="text-3xl font-black text-zinc-900 dark:text-white">
+                                        {totalPrice.toLocaleString()}원
+                                    </div>
+                                </div>
+                            </div>
+                        </>
+                    )}
+                </div>
+            </section >
+
+            {/* 배송 정보 입력 */}
+            <section>
+                <div className="mb-6 flex items-center gap-4">
+                    <h2 className="text-sm font-black text-zinc-400 uppercase tracking-widest whitespace-nowrap">배송 정보 입력</h2>
+                    <div className="h-px w-full bg-zinc-200 dark:bg-zinc-800"></div>
                 </div>
 
-                <div className="border border-zinc-700 bg-zinc-800 rounded-lg">
-                    <div className="p-6 border-b border-zinc-700">
-                        <h2 className="text-xl font-bold">주문 정보 입력</h2>
+                <div className="flex flex-col gap-6 p-10 border border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900/50 shadow-sm">
+                    <div className="flex flex-col gap-2">
+                        <label className="text-[11px] font-bold text-zinc-400 uppercase tracking-wider ml-1">이메일 주소</label>
+                        <input
+                            type="email"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            placeholder="이메일 입력"
+                            className="flex h-12 w-full items-center border border-zinc-300 bg-zinc-50 px-6 text-base font-bold focus:border-black focus:outline-none dark:border-zinc-700 dark:bg-zinc-800 dark:text-white dark:focus:border-white"
+                        />
                     </div>
 
-                    <div className="p-6 flex flex-col gap-6">
-                        <div className="grid grid-cols-[100px_1fr] items-center gap-4">
-                            <label className="bg-zinc-700 px-4 py-3 text-center rounded">
-                                이메일
-                            </label>
-                            <input
-                                type="email"
-                                value={email}
-                                onChange={(e) => setEmail(e.target.value)}
-                                placeholder="이메일 입력"
-                                className="w-full bg-zinc-900 border border-zinc-600 px-4 py-3 rounded outline-none focus:border-blue-400"
-                            />
-                        </div>
+                    <div className="flex flex-col gap-2">
+                        <label className="text-[11px] font-bold text-zinc-400 uppercase tracking-wider ml-1">배송지 주소</label>
+                        <input
+                            type="text"
+                            value={address}
+                            onChange={(e) => setAddress(e.target.value)}
+                            placeholder="주소 입력"
+                            className="flex h-12 w-full items-center border border-zinc-300 bg-zinc-50 px-6 text-base font-bold focus:border-black focus:outline-none dark:border-zinc-700 dark:bg-zinc-800 dark:text-white dark:focus:border-white"
+                        />
+                    </div>
 
-                        <div className="grid grid-cols-[100px_1fr] items-center gap-4">
-                            <label className="bg-zinc-700 px-4 py-3 text-center rounded">
-                                주소
-                            </label>
-                            <input
-                                type="text"
-                                value={address}
-                                onChange={(e) => setAddress(e.target.value)}
-                                placeholder="주소 입력"
-                                className="w-full bg-zinc-900 border border-zinc-600 px-4 py-3 rounded outline-none focus:border-blue-400"
-                            />
-                        </div>
-
-                        <div className="grid grid-cols-[100px_1fr] items-center gap-4">
-                            <label className="bg-zinc-700 px-4 py-3 text-center rounded">
-                                우편번호
-                            </label>
-                            <input
-                                type="text"
-                                value={postcode}
-                                onChange={(e) => setPostcode(e.target.value)}
-                                placeholder="우편번호 입력"
-                                className="w-full bg-zinc-900 border border-zinc-600 px-4 py-3 rounded outline-none focus:border-blue-400"
-                            />
-                        </div>
+                    <div className="flex flex-col gap-2">
+                        <label className="text-[11px] font-bold text-zinc-400 uppercase tracking-wider ml-1">우편번호</label>
+                        <input
+                            type="text"
+                            value={postcode}
+                            onChange={(e) => setPostcode(e.target.value)}
+                            placeholder="우편번호 입력"
+                            className="flex h-12 w-48 items-center border border-zinc-300 bg-zinc-50 px-6 text-base font-bold focus:border-black focus:outline-none dark:border-zinc-700 dark:bg-zinc-800 dark:text-white dark:focus:border-white"
+                        />
                     </div>
                 </div>
+            </section >
 
-                <div className="border border-zinc-700 bg-zinc-800 rounded-lg">
-                    <div className="p-6 flex flex-col items-center gap-4">
-                        <p className="text-zinc-400">
-                            주문 내용을 확인한 뒤 결제를 진행해 주세요.
-                        </p>
-
-                        <div className="w-full max-w-sm bg-zinc-700 py-4 text-center text-xl font-bold rounded">
-                            총 금액: {totalPrice.toLocaleString()}원
-                        </div>
-
-                        <button
-                            onClick={handleOrder}
-                            disabled={isSubmitting}
-                            className="w-full max-w-sm bg-blue-600 py-4 rounded font-semibold hover:bg-blue-700 disabled:bg-zinc-600 transition"
-                        >
-                            {isSubmitting ? "주문 처리중..." : "결제하기"}
-                        </button>
-                    </div>
+            {/* 결제 요약 */}
+            <section>
+                <div className="mb-6 flex items-center gap-4">
+                    <h2 className="text-sm font-black text-zinc-400 uppercase tracking-widest whitespace-nowrap">결제 정보 확인</h2>
+                    <div className="h-px w-full bg-zinc-200 dark:bg-zinc-800"></div>
                 </div>
-            </div>
+
+                <div className="flex flex-col md:flex-row gap-10 p-10 border border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900 shadow-lg">
+                    <div className="flex flex-col gap-1 w-full text-right md:text-left">
+                        <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest">최종 결제 금액</span>
+                        <div className="text-4xl font-black text-zinc-900 dark:text-zinc-50">
+                            {totalPrice.toLocaleString()}원
+                        </div>
+                    </div>
+                    <button
+                        onClick={handleOrder}
+                        disabled={isSubmitting}
+                        className="w-full bg-black py-5 text-lg font-bold text-white transition-all hover:bg-zinc-800 active:scale-95 disabled:bg-zinc-200 disabled:text-zinc-400 dark:bg-white dark:text-black dark:hover:bg-zinc-200 uppercase tracking-widest shadow-md"
+                    >
+                        {isSubmitting ? "처리 중..." : "결제하기"}
+                    </button>
+                </div>
+            </section>
         </div>
     );
 }

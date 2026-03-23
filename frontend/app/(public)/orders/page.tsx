@@ -1,8 +1,9 @@
 "use client";
 
 import { OrderDto } from "@/app/type/order";
-import {fetchApi} from "@/app/lib/client";
-import {useState, useRef} from "react";
+import { fetchApi } from "@/app/lib/client";
+import { useState, useRef } from "react";
+import Image from "next/image";
 
 export default function OrderSearchPage() {
 
@@ -22,14 +23,14 @@ export default function OrderSearchPage() {
 
         fetchApi(`/orders/${email}`)
             .then((response) => {
-                const orderList = response ||[];
+                const orderList = response || [];
 
                 if (orderList.length === 0) {
                     emailInputRef.current?.focus();
                     setOrders([]);
                 } else {
-                    const sortedOrders = orderList.sort((a:OrderDto, b:OrderDto)=>
-                    new Date(b.createdDate).getTime() - new Date(a.createdDate).getTime());
+                    const sortedOrders = orderList.sort((a: OrderDto, b: OrderDto) =>
+                        new Date(b.createdDate).getTime() - new Date(a.createdDate).getTime());
                     setOrders(sortedOrders);
                 }
             })
@@ -61,107 +62,122 @@ export default function OrderSearchPage() {
     }
 
     return (
-        <div className="flex flex-col w-full max-w-4xl mx-auto gap-8 mt-10 p-6">
-            {/* 상단: 검색 영역 */}
-            <div className="border-2  rounded-xl p-8 flex flex-col gap-6 shadow-sm">
-                <h1 className="text-2xl font-bold text-center ">☕ 커피 주문 내역 조회</h1>
-                <p className="text-gray-500 text-center">주문 시 사용하신 이메일을 입력해 주세요.</p>
+        <div className="flex flex-col gap-10">
+            {/* 검색 영역 */}
+            <div className="border border-zinc-200 bg-white p-10 dark:border-zinc-800 dark:bg-zinc-900 shadow-sm">
+                <div className="mb-8 flex flex-col items-center gap-2 text-center">
+                    <h1 className="text-2xl font-black text-zinc-900 dark:text-zinc-50 tracking-tight">☕ 커피 주문 내역 조회</h1>
+                    <p className="text-sm text-zinc-500 dark:text-zinc-400">주문 시 등록한 이메일을 통해 조회하실 수 있습니다.</p>
+                </div>
 
-                <form onSubmit={handleSearch} className="flex gap-3 items-center">
+                <form onSubmit={handleSearch} className="mx-auto flex max-w-2xl gap-2">
                     <input
                         ref={emailInputRef}
                         type="email"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
-                        placeholder="example@email.com"
-                        className="border-2 border-gray-200 rounded-lg p-3 flex-grow outline-none focus:border-blue-400 transition-colors"
+                        placeholder="이메일을 입력하세요"
+                        className="flex h-12 flex-grow items-center border border-zinc-300 bg-zinc-50 px-6 text-base font-bold focus:border-black focus:outline-none dark:border-zinc-700 dark:bg-zinc-800 dark:text-white dark:focus:border-white"
                     />
-                    <button type="submit" className="bg-blue-500 text-white font-bold py-3 px-8 rounded-lg hover:bg-blue-600 transition-all active:scale-95">
-                        조회하기
+                    <button
+                        type="submit"
+                        className="bg-black px-10 py-3 text-sm font-bold text-white transition-all hover:bg-zinc-800 active:scale-95 dark:bg-white dark:text-black dark:hover:bg-zinc-200 uppercase tracking-widest shadow-sm"
+                    >
+                        조회
                     </button>
                 </form>
             </div>
 
-            {/* 하단: 주문 결과 영역 */}
+            {/* 주문 결과 영역 */}
             {orders !== null && (
-                <div className="flex flex-col gap-6">
-                    <h2 className="text-xl font-bold border-b-2 border-gray-100 pb-2">조회 결과</h2>
+                <div className="flex flex-col gap-8">
+                    <div className="flex items-center gap-4">
+                        <h2 className="text-sm font-black text-zinc-400 uppercase tracking-[0.3em] whitespace-nowrap">조회 결과</h2>
+                        <div className="h-px w-full bg-zinc-200 dark:bg-zinc-800"></div>
+                    </div>
 
                     {orders.length === 0 ? (
-                        <div className="text-center py-20 border-2 border-dashed border-gray-200 rounded-xl text-gray-400">
+                        <div className="flex items-center justify-center py-32 border border-zinc-300 bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900 uppercase font-black tracking-widest text-zinc-400 italic text-lg">
                             조회된 주문 내역이 없습니다.
                         </div>
                     ) : (
-                        orders.map((order) => (
-                            <div key={order.id} className="border-2 border-gray-200 rounded-xl p-6 flex flex-col gap-4 hover:border-blue-200 transition-colors">
-                                <div className="flex justify-between items-center border-b border-gray-100 pb-4">
-                                    <div className="flex flex-col">
-                                        <span className="text-sm text-gray-400">주문 일자</span>
-                                        <span className="font-semibold text-lg">{new Date(order.createdDate).toLocaleDateString()}</span>
-                                    </div>
-                                    <div className="flex flex-col border-l-2 border-gray-100 pl-4">
-                                        <span className="text-sm text-gray-400">배송 정보</span>
-                                        <span className="text-sm font-medium">[{order.postcode}] {order.address}</span>
-                                    </div>
-
-
-                                    <div className="flex items-center gap-3">
-                                        {/* 1. 상태 문구 제어: status가 true면 배송완료, false면 배송준비중 */}
-                                        <span className={`px-4 py-1 rounded-full text-sm font-bold ${
-                                            order.status
-                                                ? 'bg-green-100 text-green-600'  // true: 배송완료 디자인
-                                                : 'bg-yellow-100 text-yellow-600' // false: 배송준비중 디자인
-                                        }`}>
-            {order.status ? "배송완료" : "배송준비중"}
-        </span>
-
-                                        {/* 2. 주문 취소 버튼 제어: status가 false일 때만 버튼을 렌더링함 */}
-                                        {!order.status && (
-                                            <button
-                                                onClick={() => handleCancel(order.id)}
-                                                className="border-2 border-red-100 text-red-400 hover:bg-red-50 hover:border-red-200 px-3 py-1 rounded-lg text-sm transition-colors"
-                                            >
-                                                주문취소
-                                        </button>
-                                            )}
-                                    </div>
-                                </div>
-
-                                {/* 상품 리스트 */}
-                                <div className="flex flex-col gap-4">
-                                    {order.orderItems.map((item) => (
-                                        <div key={item.productId} className="flex gap-4 items-center p-2">
-                                            {/* 상품 사진 자리 */}
-                                            <div className="relative w-20 h-20 rounded-lg overflow-hidden border-2 border-gray-100 shrink-0">
-                                                <img
-                                                    src={`/images/${item.productId}.png`}
-                                                    alt={item.productName}
-                                                    className="w-full h-full object-cover"
-                                                    onError={(e) => {
-                                                        (e.target as HTMLImageElement).src = '/images/file.svg';
-                                                    }}
-                                                />
+                        <div className="flex flex-col gap-10">
+                            {orders.map((order) => (
+                                <div key={order.id} className="border border-zinc-300 bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900 overflow-hidden">
+                                    <div className="flex flex-wrap justify-between items-center gap-6 p-6 border-b border-zinc-200 bg-white dark:border-zinc-800 dark:bg-black">
+                                        <div className="flex gap-10">
+                                            <div className="flex flex-col gap-1">
+                                                <span className="text-[10px] font-black text-zinc-400 uppercase tracking-widest">주문 일자</span>
+                                                <div className="flex h-8 items-center border border-zinc-200 bg-zinc-50 px-3 font-bold text-zinc-900 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-100">
+                                                    {new Date(order.createdDate).toLocaleDateString()}
+                                                </div>
                                             </div>
-                                            <div className="flex-grow">
-                                                <div className="font-bold text-gray-800">{item.productName}</div>
-                                                <div className="text-sm text-gray-500">수량: {item.quantity}개</div>
-                                            </div>
-                                            <div className="font-semibold text-gray-700">
-                                                {(item.price * item.quantity).toLocaleString()}원
+
+                                            <div className="flex flex-col gap-1">
+                                                <span className="text-[10px] font-black text-zinc-400 uppercase tracking-widest">배송 정보</span>
+                                                <div className="flex h-8 items-center border border-zinc-200 bg-zinc-50 px-4 font-bold text-zinc-900 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-100">
+                                                    [{order.postcode}] {order.address}
+                                                </div>
                                             </div>
                                         </div>
-                                    ))}
-                                </div>
 
-                                {/* 합계 금액 */}
-                                <div className="mt-2 pt-4 border-t border-gray-100 flex justify-end items-center gap-4">
-                                    <span className="text-gray-500">총 결제 금액</span>
-                                    <span className="text-2xl font-black text-blue-600">
-                                    {order.totalPrice.toLocaleString()}원
-                                </span>
+                                        <div className="flex items-center gap-3 ml-auto">
+                                            <div className={`flex h-9 px-5 items-center border font-bold text-[11px] uppercase tracking-widest ${order.status
+                                                ? 'border-zinc-200 bg-zinc-50 text-zinc-400 dark:border-zinc-800 dark:bg-zinc-900/50'
+                                                : 'border-zinc-900 bg-black text-white dark:border-white dark:bg-white dark:text-black'
+                                                }`}>
+                                                {order.status ? "배송 완료" : "배송 준비 중"}
+                                            </div>
+
+                                            {!order.status && (
+                                                <button
+                                                    onClick={() => handleCancel(order.id)}
+                                                    className="bg-red-50 text-red-500 hover:bg-red-500 hover:text-white px-4 py-2 text-[11px] font-bold transition-all border border-red-100 uppercase tracking-wider"
+                                                >
+                                                    주문취소
+                                                </button>
+                                            )}
+                                        </div>
+                                    </div>
+
+                                    {/* 상품 리스트 */}
+                                    <div className="p-6 flex flex-col gap-4">
+                                        {order.orderItems.map((item) => (
+                                            <div key={item.productId} className="flex gap-8 items-center p-4 border border-zinc-200 bg-white dark:border-zinc-800 dark:bg-black">
+                                                <div className="relative w-24 h-24 overflow-hidden border border-zinc-300 dark:border-zinc-700">
+                                                    <Image
+                                                        src={`/images/${item.productId}.png`}
+                                                        alt={item.productName}
+                                                        fill
+                                                        className="object-cover"
+                                                    />
+                                                </div>
+                                                <div className="flex-grow flex flex-col gap-1.5">
+                                                    <div className="text-base font-bold dark:text-zinc-100">
+                                                        {item.productName}
+                                                    </div>
+                                                    <span className="text-[11px] font-bold text-zinc-400 uppercase tracking-wider ml-0.5">수량: {item.quantity}개</span>
+                                                </div>
+                                                <div className="flex flex-col items-end gap-0.5 px-4">
+                                                    <span className="text-[10px] font-bold text-zinc-400 uppercase">결제 가격</span>
+                                                    <div className="text-lg font-bold text-zinc-900 dark:text-zinc-100">
+                                                        {(item.price * item.quantity).toLocaleString()}원
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+
+                                    {/* 합계 금액 */}
+                                    <div className="p-6 border-t border-zinc-200 bg-zinc-50 dark:border-zinc-800 dark:bg-zinc-900/50 flex justify-end items-center gap-6">
+                                        <span className="text-[11px] font-bold text-zinc-400 uppercase tracking-widest">최종 결제 금액</span>
+                                        <div className="text-2xl font-black text-zinc-900 dark:text-white">
+                                            {order.totalPrice.toLocaleString()}원
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
-                        ))
+                            ))}
+                        </div>
                     )}
                 </div>
             )}
