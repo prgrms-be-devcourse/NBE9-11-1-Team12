@@ -43,6 +43,7 @@ export default function AdminProductPage() {
       });
   }, []);
 
+  // ✅ 추가 버튼 클릭 시 (기능 대기 중)
   const handleAdd = () => {
     console.log("신규 상품 추가 로직 대기 중");
   };
@@ -113,9 +114,19 @@ export default function AdminProductPage() {
           </Link>
         </div>
 
-        <h1 className="text-2xl font-bold mb-6 px-2 text-zinc-800 border-l-4 border-black pl-4">
-          상품 목록
-        </h1>
+        {/* ✅ 제목 및 추가 버튼 섹션 (한 줄 배치) */}
+        <div className="flex items-center justify-between mb-6 px-2">
+          <h1 className="text-2xl font-bold text-zinc-800 border-l-4 border-black pl-4">
+            상품 목록
+          </h1>
+          
+          <button
+            onClick={handleAdd}
+            className="px-6 py-2 bg-black text-white font-bold hover:bg-zinc-800 transition-colors shadow-sm"
+          >
+            상품 추가
+          </button>
+        </div>
 
         <div className="overflow-hidden border border-zinc-300 bg-white shadow-sm">
           <table className="w-full border-collapse text-left">
@@ -125,7 +136,7 @@ export default function AdminProductPage() {
                 <th className="p-4 w-24">이미지</th>
                 <th className="p-4">상품명</th>
                 <th className="p-4 w-32">가격</th>
-                <th className="p-4 w-64 text-center">기능</th>
+                <th className="p-4 w-48 text-center">기능</th>
               </tr>
             </thead>
             <tbody>
@@ -136,7 +147,6 @@ export default function AdminProductPage() {
                 >
                   <td className="p-4 text-zinc-500">{product.id}</td>
 
-                  {/* ✅ 이미지 영역 수정: fill 제거 및 고정 크기 지정 */}
                   <td className="p-4">
                     <div className="h-16 w-16 flex-shrink-0 overflow-hidden border border-zinc-200 bg-zinc-100">
                       <Image
@@ -149,7 +159,6 @@ export default function AdminProductPage() {
                     </div>
                   </td>
 
-                  {/* 상품명 영역 */}
                   <td className="p-4 font-medium">
                     {isEditing === product.id ? (
                       <input
@@ -168,7 +177,6 @@ export default function AdminProductPage() {
                     )}
                   </td>
 
-                  {/* 가격 영역 */}
                   <td className="p-4 font-bold text-zinc-800">
                     {isEditing === product.id ? (
                       <input
@@ -184,32 +192,27 @@ export default function AdminProductPage() {
 
                   <td className="p-4 text-center">
                     <div className="flex justify-center gap-2">
-                      <button
-                        onClick={handleAdd}
-                        className="px-3 py-1.5 border border-zinc-300 bg-white hover:bg-zinc-100 transition-colors"
-                      >
-                        추가
-                      </button>
-
+                      {/* ✅ 수정/저장 버튼 */}
                       {isEditing === product.id ? (
                         <button
                           onClick={() => handleModify(product.id)}
-                          className="px-3 py-1.5 border border-blue-500 bg-blue-500 text-white font-bold hover:bg-blue-600 transition-colors"
+                          className="px-4 py-1.5 border border-blue-500 bg-blue-500 text-white font-bold hover:bg-blue-600 transition-colors"
                         >
                           저장
                         </button>
                       ) : (
                         <button
                           onClick={() => startEdit(product)}
-                          className="px-3 py-1.5 border border-zinc-300 bg-zinc-200 hover:bg-zinc-300 transition-colors"
+                          className="px-4 py-1.5 border border-zinc-300 bg-zinc-200 hover:bg-zinc-300 transition-colors"
                         >
                           수정
                         </button>
                       )}
 
+                      {/* ✅ 삭제 버튼 */}
                       <button
                         onClick={() => handleDelete(product.id)}
-                        className="px-3 py-1.5 border border-red-200 bg-red-50 text-red-600 hover:bg-red-100 transition-colors"
+                        className="px-4 py-1.5 border border-red-200 bg-red-50 text-red-600 hover:bg-red-100 transition-colors"
                       >
                         삭제
                       </button>
