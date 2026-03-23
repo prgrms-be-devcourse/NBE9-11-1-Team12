@@ -23,7 +23,6 @@ export default function OrderSearchPage() {
         fetchApi(`/orders/${email}`)
             .then((data) => {
                 if (data.length === 0) {
-                    alert("해당 이메일로 주문한 내역이 없습니다.");
                     emailInputRef.current?.focus();
                     setOrders([]);
                 } else {
