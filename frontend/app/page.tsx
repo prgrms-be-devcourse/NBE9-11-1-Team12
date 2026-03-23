@@ -120,10 +120,12 @@ export default function Home() {
 
     selectedProducts.forEach((product) => {
       params.append("productId", String(product.id));
+      params.append("productName", product.name);
+      params.append("price", String(product.price));
       params.append("quantity", String(quantities[product.id]));
     });
 
-    router.push(`/order?${params.toString()}`);
+    router.push(`/orders/create?${params.toString()}`);
   };
 
   return (
