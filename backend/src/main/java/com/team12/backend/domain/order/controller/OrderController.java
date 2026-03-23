@@ -5,9 +5,9 @@ import com.team12.backend.domain.order.dto.OrderDto;
 import com.team12.backend.domain.order.dto.OrdersCreateRequest;
 import com.team12.backend.domain.order.entity.Order;
 import com.team12.backend.domain.order.service.OrderService;
+import com.team12.backend.global.rsData.RsData;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -30,9 +30,9 @@ public class OrderController {
     }
 
     @DeleteMapping("/orders/{orderId}")
-    public ResponseEntity<Void> cancelOrder(@PathVariable("orderId") int orderId){
+    public RsData<Void> cancelOrder(@PathVariable("orderId") int orderId){
         orderService.deleteOrder(orderId);
-        return ResponseEntity.noContent().build();
+        return new RsData<>("200-1", "주문 취소 성공");
     }
 
 

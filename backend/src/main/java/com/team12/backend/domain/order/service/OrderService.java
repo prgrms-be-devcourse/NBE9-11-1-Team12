@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Service
@@ -72,7 +73,7 @@ public class OrderService {
     @Transactional
     public void deleteOrder(int orderId) {
         Order order = orderRepository.findById(orderId)
-                .orElseThrow(()-> new IllegalArgumentException("주문 없음"));
+                .orElseThrow(()-> new NoSuchElementException("존재하지 않는 주문"));
 
         if(order.isStatus()){
             throw new IllegalStateException("배송완료 주문");
