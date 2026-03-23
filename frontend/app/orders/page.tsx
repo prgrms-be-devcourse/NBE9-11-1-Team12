@@ -100,6 +100,11 @@ export default function OrderSearchPage() {
                                         <span className="text-sm text-gray-400">주문 일자</span>
                                         <span className="font-semibold text-lg">{new Date(order.createdDate).toLocaleDateString()}</span>
                                     </div>
+                                    <div className="flex flex-col border-l-2 border-gray-100 pl-4">
+                                        <span className="text-sm text-gray-400">배송 정보</span>
+                                        <span className="text-sm font-medium">[{order.postcode}] {order.address}</span>
+                                    </div>
+
 
                                     <div className="flex items-center gap-3">
                                         {/* 1. 상태 문구 제어: status가 true면 배송완료, false면 배송준비중 */}
