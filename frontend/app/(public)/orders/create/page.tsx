@@ -12,12 +12,7 @@ type CartItem = {
     quantity: number;
 };
 
-const productImages: Record<number, string> = {
-    1: "/images/1.png",
-    2: "/images/2.png",
-    3: "/images/3.png",
-    4: "/images/4.png",
-};
+import { getProductImage } from "@/app/lib/product-constants";
 
 export default function OrderCreatePage() {
     const router = useRouter();
@@ -113,7 +108,7 @@ export default function OrderCreatePage() {
                                 >
                                     <div className="relative w-24 h-24 overflow-hidden border border-zinc-200 bg-white dark:border-zinc-800 shrink-0">
                                         <Image
-                                            src={productImages[item.productId] || "/images/default.png"}
+                                            src={getProductImage(item.productId)}
                                             alt={item.productName}
                                             fill
                                             className="object-cover"

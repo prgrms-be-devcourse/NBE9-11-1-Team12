@@ -14,12 +14,7 @@ type ProductDetail = {
   modifiedDate: string;
 };
 
-const productImages: Record<number, string> = {
-  1: "/images/1.png",
-  2: "/images/2.png",
-  3: "/images/3.png",
-  4: "/images/4.png",
-};
+import { getProductImage } from "@/app/lib/product-constants";
 
 export default function ProductDetailPage() {
   const params = useParams();
@@ -72,7 +67,7 @@ export default function ProductDetailPage() {
           <div className="md:w-1/3 p-12 flex items-center justify-center bg-zinc-50 dark:bg-zinc-950/50">
             <div className="h-64 w-64 flex-shrink-0 overflow-hidden border border-zinc-300 bg-white dark:border-zinc-800 shadow-xl relative">
               <Image
-                src={productImages[product.id] || "/images/1.png"}
+                src={getProductImage(product.id)}
                 alt={product.name}
                 fill
                 className="object-cover"
