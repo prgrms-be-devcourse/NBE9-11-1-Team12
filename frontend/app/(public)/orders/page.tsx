@@ -4,6 +4,7 @@ import { OrderDto } from "@/app/type/order";
 import { fetchApi } from "@/app/lib/client";
 import { useState, useRef } from "react";
 import Image from "next/image";
+import { getProductImage } from "@/app/lib/product-constants";
 
 export default function OrderSearchPage() {
 
@@ -146,7 +147,7 @@ export default function OrderSearchPage() {
                                             <div key={item.productId} className="flex gap-8 items-center p-4 border border-zinc-200 bg-white dark:border-zinc-800 dark:bg-black">
                                                 <div className="relative w-24 h-24 overflow-hidden border border-zinc-300 dark:border-zinc-700">
                                                     <Image
-                                                        src={`/images/${item.productId}.png`}
+                                                        src={getProductImage(item.productId)}
                                                         alt={item.productName}
                                                         fill
                                                         className="object-cover"
