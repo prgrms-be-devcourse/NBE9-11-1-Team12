@@ -10,7 +10,7 @@ type ProductDetail = {
   id: number;
   name: string;
   price: number;
-  createDate: string;
+  createdDate: string;
   modifiedDate: string;
 };
 
@@ -98,7 +98,7 @@ export default function ProductDetailPage() {
               <div className="flex flex-col gap-2">
                 <span className="text-[11px] font-bold uppercase tracking-widest text-zinc-400">등록일</span>
                 <span className="text-sm font-bold text-zinc-600 dark:text-zinc-400">
-                  {new Date(product.createDate).toLocaleString()}
+                  {new Date(product.createdDate).toLocaleString()}
                 </span>
               </div>
               <div className="flex flex-col gap-2">
