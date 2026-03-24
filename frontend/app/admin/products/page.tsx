@@ -222,9 +222,12 @@ export default function AdminProductPage() {
                       autoFocus
                     />
                   ) : (
-                    <div className="flex min-h-[44px] items-center text-base font-bold dark:text-zinc-100">
+                    <Link
+                      href={`/admin/products/${product.id}`}
+                      className="flex min-h-[44px] text-blue-500 items-center text-base font-bold"
+                    >
                       {product.name}
-                    </div>
+                    </Link>
                   )}
                 </td>
 
