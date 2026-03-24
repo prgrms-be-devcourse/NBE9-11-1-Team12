@@ -11,12 +11,7 @@ type Product = {
   price: number;
 };
 
-const productImages: Record<number, string> = {
-  1: "/images/1.png",
-  2: "/images/2.png",
-  3: "/images/3.png",
-  4: "/images/4.png",
-};
+import { getProductImage } from "../lib/product-constants";
 
 export default function Home() {
   const router = useRouter();
@@ -149,7 +144,7 @@ export default function Home() {
                 <div className="flex items-center gap-6">
                   <div className="relative h-24 w-24 overflow-hidden border border-zinc-300 bg-white dark:border-zinc-700">
                     <Image
-                      src={productImages[product.id] || "/images/default.png"}
+                      src={getProductImage(product.id)}
                       alt={product.name}
                       fill
                       className="object-cover"
