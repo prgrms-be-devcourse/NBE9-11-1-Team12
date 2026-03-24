@@ -108,10 +108,31 @@ export default function Orders() {
 }
 
 function BatchSection({ batch, onCompleteOrder }: { batch: { date: string, entries: any[] }, onCompleteOrder: (id: number) => Promise<any> }) {
+    const [isBatchProcessing, setIsBatchProcessing] = useState(false);
     const endBatchDate = new Date(batch.date);
     const startBatchDate = new Date(endBatchDate);
     startBatchDate.setDate(startBatchDate.getDate() - 1);
     const formatDate = (d: Date) => `${d.getMonth() + 1}/${d.getDate()}`;
+
+    const isAllBatchCompleted = batch.entries.every(entry => entry.isAllCompleted);
+
+    const handleAllBatchProcess = async () => {
+        const pendingOrders = batch.entries.flatMap(entry => entry.orders).filter(o => !o.status);
+        if (pendingOrders.length === 0 || isBatchProcessing) return;
+
+        if (!confirm(`${batch.date} 배송분 전체(${pendingOrders.length}건)를 배송 처리하시겠습니까?`)) return;
+
+        setIsBatchProcessing(true);
+        try {
+            await Promise.all(pendingOrders.map(o => onCompleteOrder(o.id)));
+            alert("전체 배송 처리 완료");
+        } catch (error) {
+            console.error(error);
+            alert("일부 주문 처리 중 오류 발생");
+        } finally {
+            setIsBatchProcessing(false);
+        }
+    };
 
     return (
         <section>
@@ -119,6 +140,19 @@ function BatchSection({ batch, onCompleteOrder }: { batch: { date: string, entri
                 <h2 className="text-2xl font-black text-zinc-900 dark:text-zinc-50 tracking-tighter">
                     {batch.date} 배송분 ({formatDate(startBatchDate)} 14:00 ~ {formatDate(endBatchDate)} 14:00)
                 </h2>
+
+                <button
+                    onClick={handleAllBatchProcess}
+                    disabled={isAllBatchCompleted || isBatchProcessing}
+                    className={`px-6 py-2.5 text-xs font-bold uppercase tracking-widest transition-all shadow-sm ${isAllBatchCompleted
+                        ? 'bg-zinc-100 text-zinc-400 cursor-default dark:bg-zinc-800 dark:text-zinc-600'
+                        : isBatchProcessing
+                            ? 'bg-zinc-200 text-zinc-500 cursor-wait dark:bg-zinc-700'
+                            : 'bg-black text-white hover:bg-zinc-800 active:scale-95 dark:bg-zinc-100 dark:text-black dark:hover:bg-zinc-200'
+                        }`}
+                >
+                    {isAllBatchCompleted ? "배송분 처리 완료" : isBatchProcessing ? "처리 중..." : "해당 배송분 일괄 배송 처리"}
+                </button>
             </div>
 
             <div className="flex flex-col gap-6">
