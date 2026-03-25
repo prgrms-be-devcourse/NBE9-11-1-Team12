@@ -244,27 +244,36 @@ export default function AdminProductPage() {
                 <td className="px-6 py-5">
                   <div className="flex justify-center gap-2">
                     {isEditing === product.id ? (
-                      <button
-                        onClick={() => handleModify(product.id)}
-                        className="bg-black text-white px-5 py-2 text-xs font-bold hover:bg-zinc-800 active:scale-95 transition-all dark:bg-zinc-100 dark:text-black dark:hover:bg-zinc-200"
-                      >
-                        저장
-                      </button>
+                      <>
+                        <button
+                          onClick={() => handleModify(product.id)}
+                          className="bg-black text-white px-5 py-2 text-xs font-bold hover:bg-zinc-800 active:scale-95 transition-all dark:bg-zinc-100 dark:text-black dark:hover:bg-zinc-200"
+                        >
+                          저장
+                        </button>
+                        <button
+                          onClick={() => setIsEditing(null)}
+                          className="bg-zinc-100 text-zinc-500 px-5 py-2 text-xs font-bold hover:bg-zinc-200 active:scale-95 transition-all dark:bg-zinc-800 dark:text-zinc-400 dark:hover:bg-zinc-700"
+                        >
+                          취소
+                        </button>
+                      </>
                     ) : (
-                      <button
-                        onClick={() => startEdit(product)}
-                        className="bg-zinc-100 text-zinc-600 px-5 py-2 text-xs font-bold hover:bg-zinc-200 active:scale-95 transition-all dark:bg-zinc-800 dark:text-zinc-400 dark:hover:bg-zinc-700"
-                      >
-                        수정
-                      </button>
+                      <>
+                        <button
+                          onClick={() => startEdit(product)}
+                          className="bg-zinc-100 text-zinc-600 px-5 py-2 text-xs font-bold hover:bg-zinc-200 active:scale-95 transition-all dark:bg-zinc-800 dark:text-zinc-400 dark:hover:bg-zinc-700"
+                        >
+                          수정
+                        </button>
+                        <button
+                          onClick={() => handleDelete(product.id)}
+                          className="bg-red-50 text-red-500 px-5 py-2 text-xs font-bold hover:bg-red-500 hover:text-white transition-all dark:bg-red-950/30 dark:text-red-400 dark:hover:bg-red-600"
+                        >
+                          삭제
+                        </button>
+                      </>
                     )}
-
-                    <button
-                      onClick={() => handleDelete(product.id)}
-                      className="bg-red-50 text-red-500 px-5 py-2 text-xs font-bold hover:bg-red-500 hover:text-white transition-all dark:bg-red-950/30 dark:text-red-400 dark:hover:bg-red-600"
-                    >
-                      삭제
-                    </button>
                   </div>
                 </td>
               </tr>
