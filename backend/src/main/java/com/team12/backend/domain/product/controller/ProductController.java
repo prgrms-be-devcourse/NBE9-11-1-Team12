@@ -10,10 +10,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
-
 @RestController
 @RequiredArgsConstructor
-@CrossOrigin(origins = "http://localhost:3000") // 프론트 연동 허용
 public class ProductController {
 
     private final ProductService productService;
@@ -41,7 +39,7 @@ public class ProductController {
     // 관리자 상품 상세 조회
     @GetMapping("/admin/products/{id}")
     public ProductDto detail(@PathVariable int id) {
-        Product product = productService.findById(id).get();
+        Product product = productService.findById(id);
         return new ProductDto(product);
     }
 

@@ -48,7 +48,7 @@ public class GlobalExceptionHandler {
         return new RsData<Void>(
                 "400-2",
                 "잘못된 형식의 요청 데이터입니다."
-            );
+        );
     }
 
     @ExceptionHandler(IllegalStateException.class)
@@ -57,6 +57,15 @@ public class GlobalExceptionHandler {
         return new RsData<Void>(
                 "400-3",
                 e.getMessage()
+        );
+    }
+
+    @ExceptionHandler(Exception.class)
+    @ResponseBody
+    public RsData<Void> handleException(Exception e) {
+        return new RsData<Void>(
+                "500",
+                "서버 에러입니다."
         );
     }
 }

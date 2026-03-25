@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
+import java.util.NoSuchElementException;
 
 @Service
 @RequiredArgsConstructor
@@ -29,18 +29,19 @@ public class ProductService {
 
     @Transactional
     public ProductDto modify(int id, String name, int price) {
-        Product product = findById(id).get();
+        Product product = findById(id);
         product.update(name, price);
         return new ProductDto(product);
     }
 
     @Transactional
     public void delete(int id){
-        Product product = findById(id).get();
+        Product product = findById(id);
         productRepository.delete(product);
     }
 
-    public Optional<Product> findById(int id){
-        return productRepository.findById(id);
+    public Product findById(int id){
+        return productRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("상품 없음"));
     }
 }
