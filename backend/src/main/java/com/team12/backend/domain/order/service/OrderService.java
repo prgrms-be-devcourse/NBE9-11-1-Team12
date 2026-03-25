@@ -2,8 +2,8 @@ package com.team12.backend.domain.order.service;
 
 import com.team12.backend.domain.customer.entity.Customer;
 import com.team12.backend.domain.customer.repository.CustomerRepository;
+import com.team12.backend.domain.order.dto.OrderCreateRequest;
 import com.team12.backend.domain.order.dto.OrderDto;
-import com.team12.backend.domain.order.dto.OrdersCreateRequest;
 import com.team12.backend.domain.order.entity.Order;
 import com.team12.backend.domain.order.entity.OrderItem;
 import com.team12.backend.domain.order.repository.OrderRepository;
@@ -26,16 +26,16 @@ public class OrderService {
     private final OrderRepository orderRepository;
 
     @Transactional
-    public Order createOrder(OrdersCreateRequest request) {
+    public Order createOrder(OrderCreateRequest request) {
 
         // 기존 고객 조회, 없으면 생성 있으면 조회만하기
-        Customer customer = customerRepository.findByEmail(request.getEmail())
-                .orElseGet(() -> customerRepository.save(new Customer(request.getEmail())));
+        Customer customer = customerRepository.findByEmail(request.email())
+                .orElseGet(() -> customerRepository.save(new Customer(request.email())));
 
         // 주문 생성
         Order order = new Order(
-                request.getAddress(),
-                request.getPostcode(),
+                request.address(),
+                request.postcode(),
                 false,
                 0,
                 customer,
@@ -43,13 +43,13 @@ public class OrderService {
         );
 
         // 주문 처리
-        for (OrdersCreateRequest.OrderItemDto item : request.getOrderItems()) {
+        for (OrderCreateRequest.OrderItemCreateRequest item : request.orderItems()) {
 
-            Product product = productRepository.findById(item.getProductId())
+            Product product = productRepository.findById(item.productId())
                     .orElseThrow(() -> new NoSuchElementException("상품 없음"));
 
             OrderItem orderItem = new OrderItem(
-                    item.getQuantity(),
+                    item.quantity(),
                     product.getPrice(),
                     order,
                     product

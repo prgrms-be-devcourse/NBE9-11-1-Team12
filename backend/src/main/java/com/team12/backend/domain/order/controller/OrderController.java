@@ -1,11 +1,12 @@
 package com.team12.backend.domain.order.controller;
 
 import com.team12.backend.domain.order.dto.AdminOrderResponse;
+import com.team12.backend.domain.order.dto.OrderCreateRequest;
 import com.team12.backend.domain.order.dto.OrderDto;
-import com.team12.backend.domain.order.dto.OrdersCreateRequest;
 import com.team12.backend.domain.order.entity.Order;
 import com.team12.backend.domain.order.service.OrderService;
 import com.team12.backend.global.rsData.RsData;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -20,7 +21,7 @@ public class OrderController {
     private final OrderService orderService;
 
     @PostMapping("/orders")
-    public Order createOrder(@RequestBody OrdersCreateRequest request) {
+    public Order createOrder(@RequestBody @Valid OrderCreateRequest request) {
         return orderService.createOrder(request);
     }
 
