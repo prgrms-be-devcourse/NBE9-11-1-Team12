@@ -23,10 +23,13 @@ Team12 | 2026.03.26
 ----------------------------------------------------------------------
 🏗️ 시스템 구조
 
-Frontend: Next.js
-Backend: Spring Boot (REST API)
-Database: H2 (개발 환경)
-협업 도구: GitHub, Issue, PR
+- Frontend: Next.js
+  
+- Backend: Spring Boot (REST API)
+  
+- Database: H2 (개발 환경)
+  
+- 협업 도구: GitHub, Issue, PR
 
 ----------------------------------------------------------------------
 🧩 역할 분담
