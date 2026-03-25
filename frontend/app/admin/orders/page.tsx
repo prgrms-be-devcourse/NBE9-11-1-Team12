@@ -14,7 +14,10 @@ const getBatchDate = (dateStr: string) => {
     if (date.getHours() >= 14) {
         batchDate.setDate(date.getDate() + 1);
     }
-    return batchDate.toISOString().split('T')[0];
+    const year = batchDate.getFullYear();
+    const month = String(batchDate.getMonth() + 1).padStart(2, '0');
+    const day = String(batchDate.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
 };
 
 export default function Orders() {
