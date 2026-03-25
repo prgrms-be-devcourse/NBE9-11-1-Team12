@@ -16,7 +16,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -47,7 +46,7 @@ public class OrderService {
         for (OrdersCreateRequest.OrderItemDto item : request.getOrderItems()) {
 
             Product product = productRepository.findById(item.getProductId())
-                    .orElseThrow(() -> new RuntimeException("상품 없음"));
+                    .orElseThrow(() -> new NoSuchElementException("상품 없음"));
 
             OrderItem orderItem = new OrderItem(
                     item.getQuantity(),
@@ -88,12 +87,9 @@ public class OrderService {
 
     @Transactional
     public Order activateStatus(int id) {
-        Optional<Order> optionalOrder = orderRepository.findById(id);
-        if (optionalOrder.isEmpty()) {
-            return null;
-        }
+        Order order = orderRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("존재하지 않는 주문"));
 
-        Order order = optionalOrder.get();
         order.activateStatus();
         return order;
     }
